@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>スライド一覧 | explaindoc</title>
+<title>Unix / Linux コマンド入門 | explaindoc</title>
 <style>
 @font-face{
   font-family:'Fraunces';font-style:normal;font-weight:300 700;font-display:swap;
@@ -22,100 +22,929 @@
   --mono:"Cascadia Code","Consolas","SF Mono",Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--jp);font-size:17px;line-height:1.9;-webkit-font-smoothing:antialiased}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--jp);
+  font-size:18px;line-height:1.85;-webkit-font-smoothing:antialiased;overflow:hidden;
+}
 .latin{font-family:'Fraunces',serif}
-.wrap{max-width:760px;margin:0 auto;padding:56px 24px 80px}
 
-.brand{font-family:'Fraunces',serif;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:14px;display:block}
-h1{font-size:34px;line-height:1.45;font-weight:700;letter-spacing:-.01em;margin-bottom:14px}
-.lead{color:var(--text-sub);font-size:16px;max-width:56ch}
-.rule{height:1px;background:var(--border);margin:32px 0 40px}
-
-/* 分野セクション（資料が増えたらここに追加する） */
-.field{margin-bottom:40px}
-.field-h{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border)}
-.field-h .name{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--accent-dark)}
-.field-h .jp{font-size:14px;color:var(--text-sub)}
-.cards{display:grid;gap:10px}
-.card{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
-  padding:15px 18px;text-decoration:none;color:var(--text);box-shadow:var(--sh-1);
-  transition:all .2s cubic-bezier(.16,1,.3,1);
+/* ===== スライドの枠 ===== */
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:44px 28px 74px}
+.slide{
+  display:none;width:100%;max-width:880px;max-height:100%;overflow-y:auto;
+  animation:in .28s cubic-bezier(.16,1,.3,1);
 }
-.card:hover{border-color:var(--accent);box-shadow:var(--sh-2);transform:translateY(-1px)}
-.card .no{font-family:'Fraunces',serif;font-size:13px;color:var(--accent);min-width:26px}
-.card .ttl{font-weight:700;font-size:16px;display:block}
-.card .desc{font-size:13.5px;color:var(--text-sub);display:block;margin-top:2px}
+.slide.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.slide::-webkit-scrollbar{width:8px}
+.slide::-webkit-scrollbar-thumb{background:var(--border);border-radius:var(--r-full)}
 
-/* 空の状態 */
-.empty{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
-  padding:52px 32px;text-align:center;box-shadow:var(--sh-1);
+/* ===== 見出し ===== */
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.eyebrow .part{font-family:'Fraunces',serif;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-dark)}
+.eyebrow .bar{flex:1;height:1px;background:var(--border);max-width:60px}
+h1{font-size:40px;line-height:1.4;font-weight:700;letter-spacing:-.02em;margin-bottom:18px}
+h2{font-size:30px;line-height:1.45;font-weight:700;letter-spacing:-.01em;margin-bottom:18px}
+h2 .cmdname{font-family:var(--mono);color:var(--accent-dark);font-size:.92em}
+h3{font-size:19px;font-weight:700;margin:22px 0 10px}
+p{margin-bottom:14px}
+p:last-child,ul:last-child,.code:last-child{margin-bottom:0}
+strong{color:var(--accent-dark)}
+ul,ol{padding-left:1.4em;margin-bottom:14px}
+li{margin-bottom:7px}
+code.inline{font-family:var(--mono);font-size:.88em;background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px 6px;color:var(--accent-dark)}
+.lead{font-size:20px;color:var(--text-sub)}
+.big{font-size:26px;font-weight:700;line-height:1.6}
+
+/* ===== 表紙 ===== */
+.cover{text-align:center}
+.cover .sub{font-size:19px;color:var(--text-sub);margin-bottom:28px}
+.cover .meta{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-full);padding:6px 16px;font-size:14px;color:var(--text-sub)}
+.chip b{color:var(--text);font-weight:600}
+.hint{margin-top:30px;font-size:14px;color:var(--text-sub)}
+kbd{font-family:var(--mono);font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-bottom-width:2px;border-radius:var(--r-sm);padding:2px 7px;color:var(--text)}
+
+/* ===== コードブロック ===== */
+.code{background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-md);margin:16px 0;overflow:hidden;box-shadow:var(--sh-1)}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:7px 10px 7px 15px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.55)}
+.code-lang{font-family:'Fraunces',serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-sub)}
+.copy{font-family:var(--jp);font-size:12.5px;color:var(--accent-dark);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-full);padding:4px 13px;cursor:pointer;transition:all .2s cubic-bezier(.16,1,.3,1)}
+.copy:hover{border-color:var(--accent);color:var(--accent)}
+.copy.done{color:var(--success);border-color:var(--success)}
+pre{margin:0;padding:14px 15px;overflow-x:auto}
+pre code{font-family:var(--mono);font-size:16px;line-height:1.8;color:var(--text)}
+.c-cmd{color:var(--accent-dark);font-weight:700}
+.c-opt{color:var(--info)}
+.c-pipe{color:var(--accent);font-weight:700}
+.c-com{color:var(--text-sub);font-style:italic}
+.c-str{color:var(--success)}
+.out{border-top:1px dashed var(--border);background:rgba(255,255,255,.5);padding:11px 15px;font-family:var(--mono);font-size:14.5px;color:var(--text-sub);line-height:1.75;white-space:pre-wrap}
+.out b{display:block;font-family:var(--jp);font-size:11px;letter-spacing:.1em;color:var(--text-sub);margin-bottom:5px;font-weight:700}
+
+/* ===== 手順ステップ ===== */
+.steps{list-style:none;counter-reset:st;margin:16px 0;padding:0}
+.steps li{counter-increment:st;position:relative;padding:0 0 16px 42px;border-left:2px solid var(--border);margin-left:13px}
+.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+.steps li::before{content:counter(st);position:absolute;left:-14px;top:-3px;width:27px;height:27px;border-radius:var(--r-full);background:var(--accent-dark);color:#fff;font-family:'Fraunces',serif;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.steps b{display:block;margin-bottom:3px}
+
+/* ===== 囲み ===== */
+.note{border:1px solid var(--border);border-left:4px solid var(--info);background:var(--surface);border-radius:var(--r-md);padding:14px 18px;margin:16px 0;box-shadow:var(--sh-1)}
+.note.warn{border-left-color:var(--warning)}
+.note.do{border-left-color:var(--success)}
+.note-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;margin-bottom:5px}
+.note p{font-size:16px;margin-bottom:0}
+
+/* ===== やってみよう ===== */
+.try{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--sh-1)}
+.try-t{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:12px}
+details{border-top:1px solid var(--border);margin-top:14px;padding-top:12px}
+summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--accent-dark);border:1px solid var(--border);border-radius:var(--r-full);padding:5px 15px;transition:all .2s cubic-bezier(.16,1,.3,1);user-select:none}
+summary::-webkit-details-marker{display:none}
+summary:hover{border-color:var(--accent);color:var(--accent)}
+details[open] summary{margin-bottom:12px}
+details[open] summary .plus{transform:rotate(45deg)}
+.plus{transition:transform .2s cubic-bezier(.16,1,.3,1)}
+
+/* ===== 表 ===== */
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin:16px 0;box-shadow:var(--sh-1)}
+th{background:var(--surface-alt);font-size:13px;letter-spacing:.06em;text-align:left;padding:9px 14px;border-bottom:1px solid var(--border)}
+td{padding:9px 14px;font-size:16px;border-bottom:1px solid var(--surface-alt)}
+tr:last-child td{border-bottom:none}
+td code,th code{font-family:var(--mono);font-size:.9em;color:var(--accent-dark)}
+
+/* ===== パイプの図 ===== */
+.flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px 18px;margin:18px 0;box-shadow:var(--sh-1)}
+.flow .box{background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-md);padding:9px 15px;font-family:var(--mono);font-size:15px;color:var(--accent-dark);font-weight:700}
+.flow .box.plain{font-family:var(--jp);font-weight:400;color:var(--text-sub);background:transparent;border-style:dashed}
+.flow .arrow{color:var(--accent);font-size:19px}
+
+/* ===== ナビゲーション ===== */
+.nav{position:fixed;left:0;right:0;bottom:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(251,247,242,.94);border-top:1px solid var(--border);backdrop-filter:blur(8px);z-index:10}
+.nav .title{font-size:12.5px;color:var(--text-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav .ctrl{display:flex;align-items:center;gap:8px}
+.nav button{width:36px;height:36px;border-radius:var(--r-full);border:1px solid var(--border);background:var(--surface);color:var(--accent-dark);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s cubic-bezier(.16,1,.3,1)}
+.nav button:hover:not(:disabled){border-color:var(--accent);color:var(--accent);box-shadow:var(--sh-2)}
+.nav button:disabled{opacity:.3;cursor:default}
+.counter{font-family:'Fraunces',serif;font-size:15px;color:var(--text-sub);min-width:66px;text-align:center;font-variant-numeric:tabular-nums}
+.counter b{color:var(--accent-dark)}
+.bar{position:fixed;top:0;left:0;height:3px;background:var(--accent-dark);z-index:11;transition:width .25s cubic-bezier(.16,1,.3,1)}
+
+/* ===== 印刷 ===== */
+@media print{
+  body{overflow:visible;font-size:11pt}
+  .deck{position:static;display:block;padding:0}
+  .slide{display:block!important;max-width:none;max-height:none;overflow:visible;page-break-after:always;padding:16pt 0;animation:none}
+  .nav,.bar,.copy,.hint{display:none!important}
+  .code,.note,.try,table,.flow{box-shadow:none;break-inside:avoid}
+  details summary{display:none}
+  details[open],details{display:block;border-top:none}
+  h1{font-size:22pt}h2{font-size:17pt}
 }
-.empty svg{margin-bottom:18px}
-.empty h2{font-size:19px;font-weight:700;margin-bottom:8px}
-.empty p{color:var(--text-sub);font-size:15.5px}
-
-.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--border);font-size:13px;color:var(--text-sub);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-@media (max-width:520px){
+@media (max-width:640px){
   body{font-size:16px}
-  h1{font-size:27px}
-  .wrap{padding:40px 18px 60px}
+  h1{font-size:29px}h2{font-size:23px}
+  .lead{font-size:17px}.big{font-size:20px}
+  .deck{padding:20px 16px 70px}
+  pre code{font-size:14px}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-
-  <header>
-    <span class="brand">explaindoc</span>
-    <h1>スライド一覧</h1>
-    <p class="lead">授業で使うスライドの一覧ページです。リンクはいつでも開けるので、あとから復習にも使ってください。</p>
-    <div class="rule"></div>
-  </header>
-
-  <!--
-    スライドが増えたら、この下に分野セクションを追加する。ひな形:
-
-    <section class="field">
-      <div class="field-h"><span class="name">Python</span><span class="jp">Python</span></div>
-      <div class="cards">
-        <a class="card" href="python/index.html">
-          <span><span class="ttl">単元の地図とチートシート</span><span class="desc">学ぶ順序と構文の一覧</span></span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-        </a>
-        <a class="card" href="python/list-basics.html">
-          <span class="no">03</span>
-          <span><span class="ttl">リストと for 文</span><span class="desc">複数の値をまとめて扱う</span></span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-        </a>
-      </div>
-    </section>
-
-    分野名は Python / Unity (C#) / Java / コンピュータサイエンス。
-    スライドが入ったら、下の .empty ブロックは削除する。
-  -->
-
-  <section class="field">
-    <div class="field-h"><span class="name">CS</span><span class="jp">コンピュータサイエンス</span></div>
-    <div class="cards">
-      <a class="card" href="cs/unix-commands.html">
-        <span class="no">01</span>
-        <span><span class="ttl">Unix / Linux コマンド入門</span><span class="desc">ls・cd・cat・wc・grep とパイプ</span></span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-      </a>
-      <a class="card" href="cs/unix-commands-cheatsheet.html">
-        <span><span class="ttl">コマンド早見表</span><span class="desc">授業で使ったコマンドの一覧。困ったときに</span></span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-      </a>
-    </div>
-  </section>
-
-  <div class="foot">
-    <span>explaindoc</span>
-    <span class="latin">2026-09-05</span>
+<div class="bar" id="bar"></div>
+<div class="deck" id="deck">
+<!-- 01 表紙 -->
+<section class="slide cover" data-title="表紙">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Computer Science</span></div>
+  <h1>Unix / Linux<br>コマンド入門</h1>
+  <p class="sub">黒い画面で、コンピュータに直接しゃべる</p>
+  <div class="meta">
+    <span class="chip">前提 <b>Python の基本構文</b></span>
+    <span class="chip">所要 <b><span class="latin">90</span>分</b></span>
   </div>
+  <p class="hint"><kbd>→</kbd> または <kbd>Space</kbd> で次へ / <kbd>←</kbd> で戻る</p>
+</section>
+
+<!-- 02 なぜ -->
+<section class="slide" data-title="なぜコマンドを覚えるのか">
+  <div class="eyebrow"><span class="part">Intro</span><span class="bar"></span></div>
+  <h2>なぜ今、コマンドなのか</h2>
+  <p>AI にプログラムを書かせる時代になりました。ところが <strong>Claude Code のような AI 開発ツールは、ほとんどが黒い画面（CLI）で動きます</strong>。</p>
+  <p>マウスでクリックする世界から、文字で命令する世界へ。ここを知らないと、いちばん強い道具が使えません。</p>
+  <div class="note do">
+    <div class="note-t">今日のねらい</div>
+    <p>コマンドを <strong>6つだけ</strong> 覚えて、AI ツールやサーバーを触るときに困らない土台をつくる。</p>
+  </div>
+</section>
+
+<!-- 03 マウスとの違い -->
+<section class="slide" data-title="マウスとの違い">
+  <div class="eyebrow"><span class="part">Intro</span><span class="bar"></span></div>
+  <h2>マウスで足りるのに、なぜ？</h2>
+  <p>たとえば「この中から "田中" を含む行が何個あるか数えたい」。マウスだと、開いて、目で探して、指で数える。100行あったら心が折れます。</p>
+  <p>コマンドなら <strong>1行で終わります</strong>。しかも1000行でも100万行でも同じ1行です。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">grep</span> 田中 meibo.txt <span class="c-pipe">|</span> <span class="c-cmd">wc</span> <span class="c-opt">-l</span></code></pre>
+    <div class="out"><b>実行結果</b>22</div>
+  </div>
+  <p>今日の最後には、この1行が読めるようになります。</p>
+</section>
+
+<!-- 04 ゴール -->
+<section class="slide" data-title="今日のゴール">
+  <div class="eyebrow"><span class="part">Intro</span><span class="bar"></span></div>
+  <h2>今日おぼえる6つ</h2>
+  <table>
+    <tr><th style="width:22%">コマンド</th><th>やること</th></tr>
+    <tr><td><code>ls</code></td><td>そこに何があるか一覧する</td></tr>
+    <tr><td><code>cd</code></td><td>場所を移動する</td></tr>
+    <tr><td><code>cat</code></td><td>ファイルの中身を見る</td></tr>
+    <tr><td><code>wc</code></td><td>数を数える</td></tr>
+    <tr><td><code>grep</code></td><td>探す</td></tr>
+    <tr><td><code>|</code></td><td>コマンドどうしをつなぐ（★山場）</td></tr>
+  </table>
+  <p>この6つで、たいていの作業は回ります。</p>
+</section>
+
+<!-- 05 コマンドの形 -->
+<section class="slide" data-title="コマンドの形">
+  <div class="eyebrow"><span class="part">Intro</span><span class="bar"></span></div>
+  <h2>コマンドの形はいつも同じ</h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span></div>
+<pre><code><span class="c-cmd">ls</span>  <span class="c-opt">-l</span>  meibo.txt
+<span class="c-com">↑        ↑      ↑</span>
+<span class="c-com">コマンド名 オプション 引数</span></code></pre>
+  </div>
+  <ul>
+    <li><strong>コマンド名</strong> — 何をするか</li>
+    <li><strong>オプション</strong> — どんなふうにするか。<code class="inline">-</code> で始まる。省略できる</li>
+    <li><strong>引数</strong> — 何に対してするか。ファイル名やディレクトリ名</li>
+  </ul>
+  <div class="note warn">
+    <div class="note-t">区切りは半角スペース</div>
+    <p>全角スペースを打つとエラーになります。日本語入力はオフにしておきましょう。</p>
+  </div>
+</section>
+
+<!-- 05b 準備1 ファイルを置く -->
+<section class="slide" data-title="準備 ① ファイルを置く">
+  <div class="eyebrow"><span class="part">準備</span><span class="bar"></span></div>
+  <h2>まず演習ファイルを用意する</h2>
+  <p>コマンドを試すための材料を、自分のパソコンに置きます。</p>
+  <ol class="steps">
+    <li><b>Classroom からダウンロード</b>この授業の投稿にある <code class="inline">unix_lesson</code> のファイルを保存します。</li>
+    <li><b>展開する</b>ダウンロードしたファイルを右クリック →「すべて展開」。</li>
+    <li><b>デスクトップに移動する</b>出てきた <code class="inline">unix_lesson</code> ディレクトリを、<strong>デスクトップ</strong>に置きます。</li>
+  </ol>
+  <div class="note warn">
+    <div class="note-t">置き場所が大事です</div>
+    <p>必ず<strong>デスクトップ直下</strong>に置いてください。次のページのコマンドが、そこを見にいきます。</p>
+  </div>
+</section>
+
+<!-- 05c 準備2 ターミナルを開いて移動 -->
+<section class="slide" data-title="準備 ② ターミナルで移動する">
+  <div class="eyebrow"><span class="part">準備</span><span class="bar"></span></div>
+  <h2>ターミナルを開いて、そこへ行く</h2>
+  <p>スタートメニューで <strong>Ubuntu</strong> を検索して起動します。黒い画面が出たら、下の1行を<strong>コピーして貼り付け</strong>てください。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">cd</span> <span class="c-str">"/mnt/c/Users/$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')/Desktop/unix_lesson"</span></code></pre>
+  </div>
+  <div class="note">
+    <div class="note-t">貼り付けは右クリック</div>
+    <p>ターミナルでは <kbd>Ctrl</kbd>+<kbd>V</kbd> が効かないことがあります。<strong>右クリック</strong>で貼り付けてください。</p>
+  </div>
+  <p>何も表示されなければ成功です。<code class="inline">ls</code> と打って、ファイルが見えるか確かめましょう。</p>
+</section>
+
+<!-- 05d 準備3 うまくいかないとき -->
+<section class="slide" data-title="準備 ③ うまくいかないとき">
+  <div class="eyebrow"><span class="part">準備</span><span class="bar"></span></div>
+  <h2>エラーが出たときは</h2>
+  <p><code class="inline">No such file or directory</code> と出たら、手作業でたどります。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">cd</span> /mnt/c/Users
+<span class="c-cmd">ls</span></code></pre>
+    <div class="out"><b>実行結果</b>Public  あなたの名前  …</div>
+  </div>
+  <p>自分の名前が見つかったら、そこへ進みます。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">cd</span> 自分の名前/Desktop/unix_lesson</code></pre>
+  </div>
+  <div class="note do">
+    <div class="note-t"><kbd>Tab</kbd> キーが助けてくれます</div>
+    <p>名前を最後まで打たなくても、<strong>途中まで打って <kbd>Tab</kbd></strong> を押せば続きが補完されます。</p>
+  </div>
+</section>
+
+<!-- 06 ls -->
+<section class="slide" data-title="ls">
+  <div class="eyebrow"><span class="part">Part 1 — 見る・数える・探す</span><span class="bar"></span></div>
+  <h2><span class="cmdname">ls</span> — 一覧を見る</h2>
+  <p class="lead">list の略。<strong>そこに何があるか</strong>を表示します。</p>
+  <p>引数なしで打つと「いま自分がいる場所」の中身が出ます。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">cd</span> 01_meibo
+<span class="c-cmd">ls</span></code></pre>
+    <div class="out"><b>実行結果</b>class_a.txt  class_b.txt  meibo.txt</div>
+  </div>
+</section>
+
+<!-- 07 ls やってみよう -->
+<section class="slide" data-title="ls をやってみよう">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <div class="try">
+    <div class="try-t">やってみよう 1</div>
+    <p>ファイルが <strong>3つ</strong> 出てきましたか？ 出たら、次の2つも打ってみてください。</p>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">ls</span> <span class="c-opt">-l</span>
+<span class="c-cmd">ls</span> <span class="c-opt">-a</span></code></pre>
+    </div>
+    <p><code class="inline">-l</code> は詳しく、<code class="inline">-a</code> は隠しファイルも表示します。<strong>何が増えましたか？</strong></p>
+  </div>
+</section>
+
+<!-- 08 ls オプション -->
+<section class="slide" data-title="ls のオプション">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2><span class="cmdname">ls</span> のオプション</h2>
+  <table>
+    <tr><th style="width:20%">オプション</th><th>意味</th></tr>
+    <tr><td><code>-l</code></td><td>詳しく表示（サイズ・更新日時・権限）</td></tr>
+    <tr><td><code>-a</code></td><td><code>.</code> で始まる隠しファイルも表示</td></tr>
+    <tr><td><code>-R</code></td><td>中のディレクトリも全部たどって表示</td></tr>
+    <tr><td><code>-t</code></td><td>更新が新しい順に並べる</td></tr>
+  </table>
+  <div class="note do">
+    <div class="note-t">くっつけられます</div>
+    <p><code class="inline">ls -la</code> は <code class="inline">ls -l -a</code> と同じ意味です。</p>
+  </div>
+</section>
+
+<!-- 09 ls -l の読み方 -->
+<section class="slide" data-title="ls -l の読み方">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2>先頭の1文字が種類を表す</h2>
+  <p><code class="inline">ls -l</code> で表示される行の <strong>いちばん左の1文字</strong>だけ見てください。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span></div>
+<pre><code><span class="c-cmd">ls</span> <span class="c-opt">-l</span>
+
+<span style="color:var(--accent-dark);font-weight:700">d</span>rwxr-xr-x  3 you you 4096  9  5 15:41  ikebukuro
+<span style="color:var(--accent-dark);font-weight:700">-</span>rw-r--r--  1 you you 1531  9  5 15:41  meibo.txt
+<span class="c-com">↑
+ここだけ見る</span></code></pre>
+  </div>
+  <table>
+    <tr><th style="width:16%">1文字目</th><th>意味</th></tr>
+    <tr><td><code>d</code></td><td><strong>ディレクトリ</strong>。<code>directory</code> の頭文字。<code>cd</code> で中に入れる</td></tr>
+    <tr><td><code>-</code></td><td><strong>ファイル</strong>。中には入れない。<code>cat</code> で中身を見る</td></tr>
+  </table>
+</section>
+
+<!-- 09b 権限（発展） -->
+<section class="slide" data-title="権限の見方（発展）">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2>残りの9文字は「権限」</h2>
+  <p>1文字目の右にある <code class="inline">rwxr-xr-x</code> は、<strong>誰が何をしてよいか</strong>を表します。今日は覚えなくて大丈夫です。</p>
+  <table>
+    <tr><th style="width:16%">文字</th><th>意味</th></tr>
+    <tr><td><code>r</code></td><td>read — 読める</td></tr>
+    <tr><td><code>w</code></td><td>write — 書ける</td></tr>
+    <tr><td><code>x</code></td><td>execute — 実行できる</td></tr>
+    <tr><td><code>-</code></td><td>その権限がない</td></tr>
+  </table>
+  <p>3文字ずつ区切って <strong>「持ち主 / グループ / その他の人」</strong>の順に並んでいます。サーバーを触るようになると毎日見ることになります。</p>
+</section>
+
+<!-- 10 cat -->
+<section class="slide" data-title="cat">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2><span class="cmdname">cat</span> — 中身を見る</h2>
+  <p class="lead">ファイルの中身を、画面にそのまま吐き出します。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">cat</span> meibo.txt</code></pre>
+    <div class="out"><b>実行結果</b>田中　綾
+山本　恵子
+森　花子
+…（100行つづく）</div>
+  </div>
+  <p>名前がドーッと流れていきます。それで正解です。</p>
+</section>
+
+<!-- 11 cat は連結 -->
+<section class="slide" data-title="cat は連結">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2><span class="cmdname">cat</span> の正体は「連結」</h2>
+  <p>cat は cat（猫）ではなく <strong>concatenate（連結する）</strong> の略です。本来は複数のファイルをつなげるコマンドでした。</p>
+  <div class="try">
+    <div class="try-t">やってみよう 2</div>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">cat</span> class_a.txt class_b.txt</code></pre>
+    </div>
+    <p><strong>2つのファイルが順につながって</strong>出てきましたか？ 合わせて100人分になるはずです。</p>
+  </div>
+</section>
+
+<!-- 12 長いファイル -->
+<section class="slide" data-title="長いファイルを見る">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2>長いファイルは <span class="cmdname">cat</span> しない</h2>
+  <p>100行くらいなら平気ですが、1万行のファイルを <code class="inline">cat</code> すると画面が流れきってしまいます。そんなときは:</p>
+  <table>
+    <tr><th style="width:32%">コマンド</th><th>やること</th></tr>
+    <tr><td><code>less meibo.txt</code></td><td>スクロールして読む（<kbd>q</kbd> で終了）</td></tr>
+    <tr><td><code>head meibo.txt</code></td><td>先頭10行だけ</td></tr>
+    <tr><td><code>tail meibo.txt</code></td><td>末尾10行だけ</td></tr>
+    <tr><td><code>head -3 meibo.txt</code></td><td>先頭3行だけ</td></tr>
+  </table>
+  <div class="note warn">
+    <div class="note-t"><kbd>q</kbd> で抜ける</div>
+    <p><code class="inline">less</code> に入ると画面が切り替わります。<strong>抜けられなくなったら <kbd>q</kbd></strong> です。</p>
+  </div>
+</section>
+
+<!-- 13 wc -->
+<section class="slide" data-title="wc">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2><span class="cmdname">wc</span> — 数を数える</h2>
+  <p class="lead">word count の略。行数・単語数・バイト数を数えます。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">wc</span> <span class="c-opt">-l</span> meibo.txt</code></pre>
+    <div class="out"><b>実行結果</b>100 meibo.txt</div>
+  </div>
+  <p><code class="inline">-l</code> は lines、つまり <strong>行数</strong>。名簿は1行1人なので、<strong>行数 = 人数</strong>です。</p>
+</section>
+
+<!-- 14 wc は -l だけ -->
+<section class="slide" data-title="wc は -l を使う">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2>まずは <span class="cmdname">wc -l</span> だけでいい</h2>
+  <p><code class="inline">wc</code> には他にもオプションがありますが、<strong>日本語を扱うときは <code class="inline">-l</code> が最も安全</strong>です。</p>
+  <table>
+    <tr><th style="width:20%">オプション</th><th>意味</th></tr>
+    <tr><td><code>-l</code></td><td><strong>行数</strong>（これを使う）</td></tr>
+    <tr><td><code>-c</code></td><td>バイト数。<strong>文字数ではありません</strong></td></tr>
+    <tr><td><code>-m</code></td><td>文字数</td></tr>
+  </table>
+  <div class="note warn">
+    <div class="note-t">バイト数 ≠ 文字数</div>
+    <p>日本語1文字は3バイトぶんの重さがあります。<code class="inline">wc -c</code> が大きな数を返しても壊れていません。<strong>「何件あるか」を数えたいなら <code class="inline">-l</code></strong> です。</p>
+  </div>
+</section>
+
+<!-- 15 grep -->
+<section class="slide" data-title="grep">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2><span class="cmdname">grep</span> — 探す</h2>
+  <p class="lead">指定した文字を <strong>含む行</strong> を抜き出します。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">grep</span> 田中 meibo.txt</code></pre>
+    <div class="out"><b>実行結果</b>田中　綾
+田中　太郎
+田中　健一
+…</div>
+  </div>
+  <p>田中さんだけが抜き出されました。</p>
+</section>
+
+<!-- 16 grep は行ごと -->
+<section class="slide" data-title="grep は行ごと">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2>出てくるのは「行まるごと」</h2>
+  <p>ここが大事なところです。grep は <strong>ヒットした文字だけでなく、その行を全部</strong> 表示します。</p>
+  <div class="flow">
+    <span class="box plain">田中　綾</span>
+    <span class="arrow">→</span>
+    <span class="box">grep 田中</span>
+    <span class="arrow">→</span>
+    <span class="box plain">田中　綾（行ごと）</span>
+  </div>
+  <div class="try">
+    <div class="try-t">やってみよう 3</div>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">grep</span> 花子 meibo.txt</code></pre>
+    </div>
+    <p>名字だけでなく <strong>名前のほうでも探せます</strong>。試してみてください。</p>
+  </div>
+</section>
+
+<!-- 17 grep オプション -->
+<section class="slide" data-title="grep のオプション">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2><span class="cmdname">grep</span> のオプション</h2>
+  <table>
+    <tr><th style="width:20%">オプション</th><th>意味</th></tr>
+    <tr><td><code>-n</code></td><td>何行目かも表示</td></tr>
+    <tr><td><code>-c</code></td><td>件数だけ表示（行は出さない）</td></tr>
+    <tr><td><code>-i</code></td><td>大文字小文字を区別しない</td></tr>
+    <tr><td><code>-v</code></td><td>逆に、<strong>含まない</strong>行を出す</td></tr>
+  </table>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">grep</span> <span class="c-opt">-n</span> 田中 meibo.txt</code></pre>
+    <div class="out"><b>実行結果</b>1:田中　綾
+14:田中　太郎
+…</div>
+  </div>
+</section>
+
+<!-- 18 grep は綴り -->
+<section class="slide" data-title="grep は綴りしか見ない">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2>grep は <strong>意味</strong> を知らない</h2>
+  <p>grep が見ているのは <strong>文字の見た目だけ</strong> です。意味は一切理解していません。</p>
+  <p>あとで出てくる街の名前で試すと、こうなります。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span></div>
+<pre><code><span class="c-cmd">ls</span> <span class="c-pipe">|</span> <span class="c-cmd">grep</span> shi</code></pre>
+    <div class="out"><b>実行結果</b>shibuya
+shinagawa</div>
+  </div>
+  <p><code class="inline">sinjuku</code> は新宿なのにヒットしません。<strong>綴りが <code class="inline">si</code> だから</strong>です。人間には同じ「新」でも、grep には別の文字列です。</p>
+</section>
+<!-- 19 山場の予告 -->
+<section class="slide cover" data-title="ここからが山場">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 2</span></div>
+  <h1>パイプ <span class="latin" style="color:var(--accent-dark)">|</span></h1>
+  <p class="sub">コマンドとコマンドを、つなぐ</p>
+  <p class="big" style="margin-top:24px">ここが今日いちばん大事なところです。</p>
+</section>
+
+<!-- 20 問題提起 -->
+<section class="slide" data-title="探して数えるコマンドは無い">
+  <div class="eyebrow"><span class="part">Part 2 — パイプ</span><span class="bar"></span></div>
+  <h2>「探して数える」コマンドは存在しない</h2>
+  <p>田中さんが<strong>何人いるか</strong>知りたい。でも…</p>
+  <ul>
+    <li><code class="inline">grep</code> は <strong>探すだけ</strong>。数えてくれない</li>
+    <li><code class="inline">wc</code> は <strong>数えるだけ</strong>。探してくれない</li>
+  </ul>
+  <p>「探して数える」という便利なコマンドは、Unix には<strong>用意されていません</strong>。</p>
+  <div class="note">
+    <div class="note-t">では、どうするか</div>
+    <p>自分で <strong>つなげます</strong>。そのための記号が <code class="inline">|</code> です。</p>
+  </div>
+</section>
+
+<!-- 21 パイプとは -->
+<section class="slide" data-title="パイプとは">
+  <div class="eyebrow"><span class="part">Part 2 — パイプ</span><span class="bar"></span></div>
+  <h2>パイプ <span class="cmdname">|</span> とは</h2>
+  <p class="big">左のコマンドの<strong>出た結果</strong>を、右のコマンドに<strong>流し込む</strong>。</p>
+  <div class="flow">
+    <span class="box plain">meibo.txt</span>
+    <span class="arrow">→</span>
+    <span class="box">grep 田中</span>
+    <span class="arrow">→</span>
+    <span class="box plain">22行</span>
+    <span class="arrow">→</span>
+    <span class="box">wc -l</span>
+    <span class="arrow">→</span>
+    <span class="box plain">22</span>
+  </div>
+  <p>ふつうなら画面に出るはずの結果が、<strong>画面ではなく次のコマンドへ</strong>流れていきます。水道のホースをつなぐイメージです。</p>
+</section>
+
+<!-- 22 やってみよう パイプ -->
+<section class="slide" data-title="パイプをやってみよう">
+  <div class="eyebrow"><span class="part">Part 2 — パイプ</span><span class="bar"></span></div>
+  <div class="try">
+    <div class="try-t">やってみよう 4 ★山場</div>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">grep</span> 田中 meibo.txt <span class="c-pipe">|</span> <span class="c-cmd">wc</span> <span class="c-opt">-l</span></code></pre>
+    </div>
+    <p class="big" style="margin:14px 0 0">田中さんは何人いましたか？</p>
+    <details>
+      <summary><svg class="plus" width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>答えを見る</summary>
+      <p class="big" style="color:var(--accent-dark)">22人</p>
+      <p>100人中22人が田中さんでした。目で数えていたら何分かかったでしょうか。</p>
+    </details>
+  </div>
+</section>
+
+<!-- 23 パイプの練習 -->
+<section class="slide" data-title="パイプの練習">
+  <div class="eyebrow"><span class="part">Part 2 — パイプ</span><span class="bar"></span></div>
+  <h2>つなぎ方を変えてみる</h2>
+  <div class="try">
+    <div class="try-t">やってみよう 5</div>
+    <p>1つずつ打って、結果を確かめてください。</p>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-com"># ① class_a に田中さんは何人？</span>
+<span class="c-cmd">grep</span> 田中 class_a.txt <span class="c-pipe">|</span> <span class="c-cmd">wc</span> <span class="c-opt">-l</span>
+
+<span class="c-com"># ② 田中太郎さんはいる？（パイプは何回でもOK）</span>
+<span class="c-cmd">grep</span> 田中 meibo.txt <span class="c-pipe">|</span> <span class="c-cmd">grep</span> 太郎
+
+<span class="c-com"># ③ 田中さん以外は何人？</span>
+<span class="c-cmd">grep</span> <span class="c-opt">-v</span> 田中 meibo.txt <span class="c-pipe">|</span> <span class="c-cmd">wc</span> <span class="c-opt">-l</span></code></pre>
+    </div>
+    <details>
+      <summary><svg class="plus" width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>答えを見る</summary>
+      <p>① <strong>13人</strong> ／ ② <strong>田中　太郎</strong> が1人だけヒット ／ ③ <strong>78人</strong>（100 − 22）</p>
+    </details>
+  </div>
+</section>
+
+<!-- 24 sort を挟む -->
+<section class="slide" data-title="間に挟む">
+  <div class="eyebrow"><span class="part">Part 2 — パイプ</span><span class="bar"></span></div>
+  <h2>間に別のコマンドを挟める</h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">grep</span> 田中 meibo.txt <span class="c-pipe">|</span> <span class="c-cmd">sort</span> <span class="c-pipe">|</span> <span class="c-cmd">head</span> <span class="c-opt">-5</span></code></pre>
+    <div class="out"><b>実行結果</b>田中さんを五十音順に並べて、先頭5人だけ</div>
+  </div>
+  <p>パイプと相性のいいコマンド:</p>
+  <table>
+    <tr><th style="width:26%">コマンド</th><th>役割</th></tr>
+    <tr><td><code>sort</code></td><td>並べ替える</td></tr>
+    <tr><td><code>uniq</code></td><td>連続する重複を1つにまとめる（<code>sort</code> の後で）</td></tr>
+    <tr><td><code>head</code> / <code>tail</code></td><td>先頭・末尾だけ取り出す</td></tr>
+  </table>
+</section>
+
+<!-- 25 Unixの思想 -->
+<section class="slide" data-title="Unixの考え方">
+  <div class="eyebrow"><span class="part">Part 2 — パイプ</span><span class="bar"></span></div>
+  <h2>なぜ「探して数える」が無いのか</h2>
+  <p class="big">小さいことを、1つだけ、うまくやる。</p>
+  <p>これが Unix の設計思想です。grep は探すだけ、wc は数えるだけ。<strong>あえて何でも屋を作りません。</strong></p>
+  <p>そのかわり <code class="inline">|</code> で自由に組み合わせて、<strong>必要な道具を自分で作る</strong>。50年前に決まったこの考え方が、今のあなたのパソコンでも動いています。</p>
+  <div class="note do">
+    <div class="note-t">覚えておくと得</div>
+    <p>新しいコマンドを知るたびに、<strong>組み合わせの数が増えていきます</strong>。6個のコマンドでも、つなげ方は無限にあります。</p>
+  </div>
+</section>
+
+<!-- 26 リダイレクト -->
+<section class="slide" data-title="ファイルに保存する">
+  <div class="eyebrow"><span class="part">Part 2 — パイプ</span><span class="bar"></span></div>
+  <h2>結果をファイルに残す <span class="cmdname">&gt;</span></h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">grep</span> 田中 meibo.txt <span class="c-pipe">|</span> <span class="c-cmd">wc</span> <span class="c-opt">-l</span>      <span class="c-com"># 次のコマンドへ渡す</span>
+<span class="c-cmd">grep</span> 田中 meibo.txt <span class="c-pipe">&gt;</span> tanaka.txt  <span class="c-com"># ファイルに保存する</span></code></pre>
+  </div>
+  <p><code class="inline">|</code> は <strong>コマンドへ</strong>、<code class="inline">&gt;</code> は <strong>ファイルへ</strong>。似ていますが行き先が違います。</p>
+  <div class="note warn">
+    <div class="note-t">上書きに注意</div>
+    <p><code class="inline">&gt;</code> は既にあるファイルを<strong>問答無用で上書き</strong>します。消したくないときは <code class="inline">&gt;&gt;</code>（追記）を使います。</p>
+  </div>
+</section>
+
+<!-- 27 Part3 表紙 -->
+<section class="slide cover" data-title="ディレクトリを歩く">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 3</span></div>
+  <h1>ディレクトリを歩く</h1>
+  <p class="sub">いま自分がどこにいるのか</p>
+  <p class="hint" style="margin-top:26px">ここからは <code class="inline">02_tokyo_food</code> を使います</p>
+</section>
+
+<!-- 28 cd -->
+<section class="slide" data-title="cd">
+  <div class="eyebrow"><span class="part">Part 3 — 移動する</span><span class="bar"></span></div>
+  <h2><span class="cmdname">cd</span> — 場所を移動する</h2>
+  <p class="lead">change directory の略。<strong>いまいる場所</strong>を変えます。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">cd</span> ../02_tokyo_food/tokyo_food
+<span class="c-cmd">ls</span></code></pre>
+    <div class="out"><b>実行結果</b>ikebukuro  shibuya  shinagawa  sinjuku</div>
+  </div>
+  <p>4つの街が見えました。この中に店が入っています。</p>
+</section>
+
+<!-- 29 無言＝成功 -->
+<section class="slide" data-title="無言は成功">
+  <div class="eyebrow"><span class="part">Part 3 — 移動する</span><span class="bar"></span></div>
+  <h2>何も表示されない ＝ 成功</h2>
+  <p class="big"><code class="inline">cd</code> は成功しても、<strong>何も言いません。</strong></p>
+  <p>画面に何も出ないと「失敗した？」と不安になりますが、逆です。<strong>Unix は「無言 ＝ 成功」</strong>が基本ルール。文句を言われなかったら、うまくいっています。</p>
+  <div class="note do">
+    <div class="note-t">失敗したときは必ず言われます</div>
+    <p><code class="inline">No such file or directory</code> と出たら「そのディレクトリ、ここには無いよ」の意味です。</p>
+  </div>
+</section>
+
+<!-- 30 潜る -->
+<section class="slide" data-title="潜っていく">
+  <div class="eyebrow"><span class="part">Part 3 — 移動する</span><span class="bar"></span></div>
+  <div class="try">
+    <div class="try-t">やってみよう 6</div>
+    <p>1行ずつ打って、そのつど <code class="inline">ls</code> で中を見てください。</p>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">cd</span> ikebukuro
+<span class="c-cmd">ls</span>
+<span class="c-cmd">cd</span> yakiniku_ya
+<span class="c-cmd">ls</span></code></pre>
+    </div>
+    <p>いちばん奥に <strong><code class="inline">yakiniku.jpg</code></strong> がありましたか？</p>
+  </div>
+</section>
+
+<!-- 31 . と .. -->
+<section class="slide" data-title="ドットの意味">
+  <div class="eyebrow"><span class="part">Part 3 — 移動する</span><span class="bar"></span></div>
+  <h2>覚えるのは、この3つだけ</h2>
+  <table>
+    <tr><th style="width:20%">書き方</th><th>意味</th></tr>
+    <tr><td><code>.</code></td><td>いまいる場所</td></tr>
+    <tr><td><code>..</code></td><td>1つ上</td></tr>
+    <tr><td><code>/</code></td><td>階層の区切り</td></tr>
+  </table>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">cd</span> ..      <span class="c-com"># 1つ上に戻る</span>
+<span class="c-cmd">cd</span> ../..   <span class="c-com"># 2つ上に戻る</span>
+<span class="c-cmd">cd</span>         <span class="c-com"># ホームに戻る（引数なし）</span></code></pre>
+  </div>
+</section>
+
+<!-- 32 pwd -->
+<section class="slide" data-title="pwd">
+  <div class="eyebrow"><span class="part">Part 3 — 移動する</span><span class="bar"></span></div>
+  <h2><span class="cmdname">pwd</span> — 迷子防止コマンド</h2>
+  <p class="lead">print working directory の略。<strong>いま自分がどこにいるか</strong>を教えてくれます。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">pwd</span></code></pre>
+    <div class="out"><b>実行結果</b>/home/you/unix_lesson/02_tokyo_food/tokyo_food/ikebukuro</div>
+  </div>
+  <div class="note do">
+    <div class="note-t">迷ったら pwd と ls</div>
+    <p>「どこにいるか」を <code class="inline">pwd</code> で、「何があるか」を <code class="inline">ls</code> で。この2つで<strong>ほとんどの迷子は解決します</strong>。</p>
+  </div>
+</section>
+
+<!-- 33 一気に移動 -->
+<section class="slide" data-title="一気に移動する">
+  <div class="eyebrow"><span class="part">Part 3 — 移動する</span><span class="bar"></span></div>
+  <h2>一段ずつ潜らなくていい</h2>
+  <div class="try">
+    <div class="try-t">やってみよう 7</div>
+    <p>まず <code class="inline">tokyo_food</code> まで戻ってから:</p>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">cd</span> shibuya/ra-men_ya
+<span class="c-cmd">pwd</span></code></pre>
+    </div>
+    <p><code class="inline">/</code> でつなげば <strong>一気に奥まで行けます</strong>。エクスプローラーでダブルクリックを繰り返すより速い。</p>
+  </div>
+  <div class="note">
+    <div class="note-t"><kbd>Tab</kbd> キーを使う</div>
+    <p><code class="inline">cd shi</code> まで打って <kbd>Tab</kbd> を押すと、<strong>続きを補完してくれます</strong>。打ち間違いが激減します。</p>
+  </div>
+</section>
+
+<!-- 34 絶対パスと相対パス -->
+<section class="slide" data-title="絶対パスと相対パス">
+  <div class="eyebrow"><span class="part">Part 3 — 移動する</span><span class="bar"></span></div>
+  <h2>2種類の住所の書き方</h2>
+  <table>
+    <tr><th style="width:28%">種類</th><th>例</th><th>特徴</th></tr>
+    <tr><td><strong>絶対パス</strong></td><td><code>/home/you/unix_lesson</code></td><td><code>/</code> から始まる。<strong>どこにいても同じ場所</strong>を指す</td></tr>
+    <tr><td><strong>相対パス</strong></td><td><code>../02_tokyo_food</code></td><td><strong>いまいる場所が基準</strong>。移動すると意味が変わる</td></tr>
+  </table>
+  <p>「日本国東京都渋谷区…」が絶対パス、「ここから2つ隣」が相対パスだと思ってください。</p>
+</section>
+
+<!-- 35 ls -R -->
+<section class="slide" data-title="全体を見る">
+  <div class="eyebrow"><span class="part">Part 3 — 移動する</span><span class="bar"></span></div>
+  <h2>中身を全部まとめて見る</h2>
+  <div class="try">
+    <div class="try-t">やってみよう 8</div>
+    <p><code class="inline">tokyo_food</code> に戻ってから:</p>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">ls</span> <span class="c-opt">-R</span></code></pre>
+    </div>
+    <p>中のディレクトリまで全部たどって表示されます。</p>
+  </div>
+</section>
+
+<!-- 36 パイプ再登場 -->
+<section class="slide" data-title="パイプ再登場">
+  <div class="eyebrow"><span class="part">Part 3 — 移動する</span><span class="bar"></span></div>
+  <h2>ここでパイプが効いてくる</h2>
+  <div class="try">
+    <div class="try-t">やってみよう 9</div>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">ls</span> <span class="c-opt">-R</span> <span class="c-pipe">|</span> <span class="c-cmd">grep</span> jpg
+<span class="c-cmd">find</span> . <span class="c-opt">-name</span> <span class="c-str">"*.jpg"</span> <span class="c-pipe">|</span> <span class="c-cmd">wc</span> <span class="c-opt">-l</span></code></pre>
+    </div>
+    <p class="big" style="margin:12px 0 0">画像は全部で何枚ありましたか？</p>
+    <details>
+      <summary><svg class="plus" width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>答えを見る</summary>
+      <p class="big" style="color:var(--accent-dark)">8枚</p>
+      <p>4つの街 × 2店 × 1枚 = 8枚。<strong>1つずつ開いて数えなくても分かりました。</strong></p>
+    </details>
+  </div>
+</section>
+
+<!-- 37 find -->
+<section class="slide" data-title="find">
+  <div class="eyebrow"><span class="part">Part 3 — 移動する</span><span class="bar"></span></div>
+  <h2><span class="cmdname">find</span> — ファイルそのものを探す</h2>
+  <p><code class="inline">grep</code> が <strong>中身</strong> を探すのに対して、<code class="inline">find</code> は <strong>ファイルそのもの</strong>を探します。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">find</span> . <span class="c-opt">-name</span> <span class="c-str">"*.jpg"</span>    <span class="c-com"># ここから下の.jpgを全部</span>
+<span class="c-cmd">find</span> . <span class="c-opt">-type</span> d          <span class="c-com"># ディレクトリだけ一覧</span></code></pre>
+  </div>
+  <ul>
+    <li><code class="inline">.</code> は「いまいる場所から下を全部」</li>
+    <li><code class="inline">*</code> は「なんでもいい」を表す<strong>ワイルドカード</strong></li>
+  </ul>
+</section>
+
+<!-- 38 困ったとき -->
+<section class="slide" data-title="困ったときは">
+  <div class="eyebrow"><span class="part">まとめ</span><span class="bar"></span></div>
+  <h2>困ったときの4つ</h2>
+  <table>
+    <tr><th style="width:44%">こうなったら</th><th>これを押す</th></tr>
+    <tr><td>固まった・止まらない</td><td><kbd>Ctrl</kbd> + <kbd>C</kbd></td></tr>
+    <tr><td><code>less</code> から抜けられない</td><td><kbd>q</kbd></td></tr>
+    <tr><td>打ち間違いが多い</td><td>途中まで打って <kbd>Tab</kbd></td></tr>
+    <tr><td>さっきのコマンドをもう一度</td><td><kbd>↑</kbd></td></tr>
+  </table>
+  <div class="note do">
+    <div class="note-t">迷子になったら</div>
+    <p><code class="inline">pwd</code> で現在地、<code class="inline">ls</code> で中身、<code class="inline">cd</code>（引数なし）でホームに帰れます。</p>
+  </div>
+</section>
+
+<!-- 39 チェックリスト -->
+<section class="slide" data-title="チェックリスト">
+  <div class="eyebrow"><span class="part">まとめ</span><span class="bar"></span></div>
+  <h2>できるようになりましたか</h2>
+  <table>
+    <tr><td><code>ls</code></td><td>ファイル一覧が見られる</td></tr>
+    <tr><td><code>cd</code> / <code>pwd</code></td><td>行き来できる。迷子にならない</td></tr>
+    <tr><td><code>cat</code></td><td>中身が見られる</td></tr>
+    <tr><td><code>wc -l</code></td><td>行数が数えられる</td></tr>
+    <tr><td><code>grep</code></td><td>探せる</td></tr>
+    <tr><td><code>|</code></td><td><strong>コマンドをつなげられる</strong></td></tr>
+  </table>
+  <p>全部にチェックが付いたら、今日の目標は達成です。</p>
+</section>
+
+<!-- 40 おわり -->
+<section class="slide cover" data-title="おわり">
+  <div class="eyebrow" style="justify-content:center"><span class="part">The End</span></div>
+  <h1>おつかれさま</h1>
+  <p class="sub">6つのコマンドと、パイプが使えるようになりました</p>
+  <p style="max-width:52ch;margin:0 auto 26px">コマンドは、使わないとすぐ忘れます。忘れたときのために <strong>早見表</strong> を用意しました。ブックマークしておいてください。</p>
+  <div class="meta">
+    <a class="chip" href="unix-commands-cheatsheet.html" style="text-decoration:none;color:var(--accent-dark);font-weight:700;border-color:var(--accent)">コマンド早見表をひらく →</a>
+  </div>
+  <p class="hint">最終更新: <span class="latin">2026-09-05</span></p>
+</section>
 </div>
+
+<nav class="nav">
+  <span class="title" id="navTitle"></span>
+  <span class="ctrl">
+    <button id="prev" type="button" aria-label="前のスライド">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg>
+    </button>
+    <span class="counter"><b id="cur">1</b> / <span id="total">1</span></span>
+    <button id="next" type="button" aria-label="次のスライド">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+    </button>
+  </span>
+</nav>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var elCur = document.getElementById('cur');
+  var elTotal = document.getElementById('total');
+  var elBar = document.getElementById('bar');
+  var elTitle = document.getElementById('navTitle');
+  var btnPrev = document.getElementById('prev');
+  var btnNext = document.getElementById('next');
+  elTotal.textContent = slides.length;
+
+  function show(n, push){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function(s, k){ s.classList.toggle('on', k === i); });
+    elCur.textContent = i + 1;
+    elBar.style.width = ((i + 1) / slides.length * 100) + '%';
+    elTitle.textContent = slides[i].dataset.title || '';
+    btnPrev.disabled = (i === 0);
+    btnNext.disabled = (i === slides.length - 1);
+    slides[i].scrollTop = 0;
+    if (push !== false) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  function fromHash(){
+    var n = parseInt((location.hash || '').replace('#',''), 10);
+    show(isNaN(n) ? 0 : n - 1, false);
+  }
+
+  btnPrev.addEventListener('click', function(){ show(i - 1); });
+  btnNext.addEventListener('click', function(){ show(i + 1); });
+  window.addEventListener('hashchange', fromHash);
+
+  document.addEventListener('keydown', function(e){
+    if (e.target.tagName === 'SUMMARY' && (e.key === ' ' || e.key === 'Enter')) return;
+    switch(e.key){
+      case 'ArrowRight': case 'PageDown': show(i + 1); break;
+      case 'ArrowLeft':  case 'PageUp':   show(i - 1); break;
+      case ' ':          show(e.shiftKey ? i - 1 : i + 1); e.preventDefault(); break;
+      case 'Home':       show(0); break;
+      case 'End':        show(slides.length - 1); break;
+      default: return;
+    }
+  });
+
+  // スマホのスワイプ
+  var x0 = null;
+  document.addEventListener('touchstart', function(e){ x0 = e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 60) show(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  }, {passive:true});
+
+  // コードのコピー
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var code = btn.closest('.code').querySelector('pre code').innerText;
+      navigator.clipboard.writeText(code).then(function(){
+        btn.textContent = 'コピーしました';
+        btn.classList.add('done');
+        setTimeout(function(){ btn.textContent = 'コピー'; btn.classList.remove('done'); }, 1600);
+      });
+    });
+  });
+
+  fromHash();
+})();
+</script>
 </body>
 </html>

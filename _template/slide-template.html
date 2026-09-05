@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>スライド一覧 | explaindoc</title>
+<title>スライドの題名 | explaindoc</title>
 <style>
 @font-face{
   font-family:'Fraunces';font-style:normal;font-weight:300 700;font-display:swap;
@@ -22,100 +22,308 @@
   --mono:"Cascadia Code","Consolas","SF Mono",Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--jp);font-size:17px;line-height:1.9;-webkit-font-smoothing:antialiased}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--jp);
+  font-size:18px;line-height:1.85;-webkit-font-smoothing:antialiased;overflow:hidden;
+}
 .latin{font-family:'Fraunces',serif}
-.wrap{max-width:760px;margin:0 auto;padding:56px 24px 80px}
 
-.brand{font-family:'Fraunces',serif;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:14px;display:block}
-h1{font-size:34px;line-height:1.45;font-weight:700;letter-spacing:-.01em;margin-bottom:14px}
-.lead{color:var(--text-sub);font-size:16px;max-width:56ch}
-.rule{height:1px;background:var(--border);margin:32px 0 40px}
-
-/* 分野セクション（資料が増えたらここに追加する） */
-.field{margin-bottom:40px}
-.field-h{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border)}
-.field-h .name{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--accent-dark)}
-.field-h .jp{font-size:14px;color:var(--text-sub)}
-.cards{display:grid;gap:10px}
-.card{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
-  padding:15px 18px;text-decoration:none;color:var(--text);box-shadow:var(--sh-1);
-  transition:all .2s cubic-bezier(.16,1,.3,1);
+/* ===== スライドの枠 ===== */
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:44px 28px 74px}
+.slide{
+  display:none;width:100%;max-width:880px;max-height:100%;overflow-y:auto;
+  animation:in .28s cubic-bezier(.16,1,.3,1);
 }
-.card:hover{border-color:var(--accent);box-shadow:var(--sh-2);transform:translateY(-1px)}
-.card .no{font-family:'Fraunces',serif;font-size:13px;color:var(--accent);min-width:26px}
-.card .ttl{font-weight:700;font-size:16px;display:block}
-.card .desc{font-size:13.5px;color:var(--text-sub);display:block;margin-top:2px}
+.slide.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.slide::-webkit-scrollbar{width:8px}
+.slide::-webkit-scrollbar-thumb{background:var(--border);border-radius:var(--r-full)}
 
-/* 空の状態 */
-.empty{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
-  padding:52px 32px;text-align:center;box-shadow:var(--sh-1);
+/* ===== 見出し ===== */
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.eyebrow .part{font-family:'Fraunces',serif;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-dark)}
+.eyebrow .bar{flex:1;height:1px;background:var(--border);max-width:60px}
+h1{font-size:40px;line-height:1.4;font-weight:700;letter-spacing:-.02em;margin-bottom:18px}
+h2{font-size:30px;line-height:1.45;font-weight:700;letter-spacing:-.01em;margin-bottom:18px}
+h2 .cmdname{font-family:var(--mono);color:var(--accent-dark);font-size:.92em}
+h3{font-size:19px;font-weight:700;margin:22px 0 10px}
+p{margin-bottom:14px}
+p:last-child,ul:last-child,.code:last-child{margin-bottom:0}
+strong{color:var(--accent-dark)}
+ul,ol{padding-left:1.4em;margin-bottom:14px}
+li{margin-bottom:7px}
+code.inline{font-family:var(--mono);font-size:.88em;background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px 6px;color:var(--accent-dark)}
+.lead{font-size:20px;color:var(--text-sub)}
+.big{font-size:26px;font-weight:700;line-height:1.6}
+
+/* ===== 表紙 ===== */
+.cover{text-align:center}
+.cover .sub{font-size:19px;color:var(--text-sub);margin-bottom:28px}
+.cover .meta{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-full);padding:6px 16px;font-size:14px;color:var(--text-sub)}
+.chip b{color:var(--text);font-weight:600}
+.hint{margin-top:30px;font-size:14px;color:var(--text-sub)}
+kbd{font-family:var(--mono);font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-bottom-width:2px;border-radius:var(--r-sm);padding:2px 7px;color:var(--text)}
+
+/* ===== コードブロック ===== */
+.code{background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-md);margin:16px 0;overflow:hidden;box-shadow:var(--sh-1)}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:7px 10px 7px 15px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.55)}
+.code-lang{font-family:'Fraunces',serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-sub)}
+.copy{font-family:var(--jp);font-size:12.5px;color:var(--accent-dark);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-full);padding:4px 13px;cursor:pointer;transition:all .2s cubic-bezier(.16,1,.3,1)}
+.copy:hover{border-color:var(--accent);color:var(--accent)}
+.copy.done{color:var(--success);border-color:var(--success)}
+pre{margin:0;padding:14px 15px;overflow-x:auto}
+pre code{font-family:var(--mono);font-size:16px;line-height:1.8;color:var(--text)}
+.c-cmd{color:var(--accent-dark);font-weight:700}
+.c-opt{color:var(--info)}
+.c-pipe{color:var(--accent);font-weight:700}
+.c-com{color:var(--text-sub);font-style:italic}
+.c-str{color:var(--success)}
+.out{border-top:1px dashed var(--border);background:rgba(255,255,255,.5);padding:11px 15px;font-family:var(--mono);font-size:14.5px;color:var(--text-sub);line-height:1.75;white-space:pre-wrap}
+.out b{display:block;font-family:var(--jp);font-size:11px;letter-spacing:.1em;color:var(--text-sub);margin-bottom:5px;font-weight:700}
+
+/* ===== 手順ステップ ===== */
+.steps{list-style:none;counter-reset:st;margin:16px 0;padding:0}
+.steps li{counter-increment:st;position:relative;padding:0 0 16px 42px;border-left:2px solid var(--border);margin-left:13px}
+.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+.steps li::before{content:counter(st);position:absolute;left:-14px;top:-3px;width:27px;height:27px;border-radius:var(--r-full);background:var(--accent-dark);color:#fff;font-family:'Fraunces',serif;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.steps b{display:block;margin-bottom:3px}
+
+/* ===== 囲み ===== */
+.note{border:1px solid var(--border);border-left:4px solid var(--info);background:var(--surface);border-radius:var(--r-md);padding:14px 18px;margin:16px 0;box-shadow:var(--sh-1)}
+.note.warn{border-left-color:var(--warning)}
+.note.do{border-left-color:var(--success)}
+.note-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;margin-bottom:5px}
+.note p{font-size:16px;margin-bottom:0}
+
+/* ===== やってみよう ===== */
+.try{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--sh-1)}
+.try-t{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:12px}
+details{border-top:1px solid var(--border);margin-top:14px;padding-top:12px}
+summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--accent-dark);border:1px solid var(--border);border-radius:var(--r-full);padding:5px 15px;transition:all .2s cubic-bezier(.16,1,.3,1);user-select:none}
+summary::-webkit-details-marker{display:none}
+summary:hover{border-color:var(--accent);color:var(--accent)}
+details[open] summary{margin-bottom:12px}
+details[open] summary .plus{transform:rotate(45deg)}
+.plus{transition:transform .2s cubic-bezier(.16,1,.3,1)}
+
+/* ===== 表 ===== */
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin:16px 0;box-shadow:var(--sh-1)}
+th{background:var(--surface-alt);font-size:13px;letter-spacing:.06em;text-align:left;padding:9px 14px;border-bottom:1px solid var(--border)}
+td{padding:9px 14px;font-size:16px;border-bottom:1px solid var(--surface-alt)}
+tr:last-child td{border-bottom:none}
+td code,th code{font-family:var(--mono);font-size:.9em;color:var(--accent-dark)}
+
+/* ===== パイプの図 ===== */
+.flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px 18px;margin:18px 0;box-shadow:var(--sh-1)}
+.flow .box{background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-md);padding:9px 15px;font-family:var(--mono);font-size:15px;color:var(--accent-dark);font-weight:700}
+.flow .box.plain{font-family:var(--jp);font-weight:400;color:var(--text-sub);background:transparent;border-style:dashed}
+.flow .arrow{color:var(--accent);font-size:19px}
+
+/* ===== ナビゲーション ===== */
+.nav{position:fixed;left:0;right:0;bottom:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(251,247,242,.94);border-top:1px solid var(--border);backdrop-filter:blur(8px);z-index:10}
+.nav .title{font-size:12.5px;color:var(--text-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav .ctrl{display:flex;align-items:center;gap:8px}
+.nav button{width:36px;height:36px;border-radius:var(--r-full);border:1px solid var(--border);background:var(--surface);color:var(--accent-dark);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s cubic-bezier(.16,1,.3,1)}
+.nav button:hover:not(:disabled){border-color:var(--accent);color:var(--accent);box-shadow:var(--sh-2)}
+.nav button:disabled{opacity:.3;cursor:default}
+.counter{font-family:'Fraunces',serif;font-size:15px;color:var(--text-sub);min-width:66px;text-align:center;font-variant-numeric:tabular-nums}
+.counter b{color:var(--accent-dark)}
+.bar{position:fixed;top:0;left:0;height:3px;background:var(--accent-dark);z-index:11;transition:width .25s cubic-bezier(.16,1,.3,1)}
+
+/* ===== 印刷 ===== */
+@media print{
+  body{overflow:visible;font-size:11pt}
+  .deck{position:static;display:block;padding:0}
+  .slide{display:block!important;max-width:none;max-height:none;overflow:visible;page-break-after:always;padding:16pt 0;animation:none}
+  .nav,.bar,.copy,.hint{display:none!important}
+  .code,.note,.try,table,.flow{box-shadow:none;break-inside:avoid}
+  details summary{display:none}
+  details[open],details{display:block;border-top:none}
+  h1{font-size:22pt}h2{font-size:17pt}
 }
-.empty svg{margin-bottom:18px}
-.empty h2{font-size:19px;font-weight:700;margin-bottom:8px}
-.empty p{color:var(--text-sub);font-size:15.5px}
-
-.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--border);font-size:13px;color:var(--text-sub);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-@media (max-width:520px){
+@media (max-width:640px){
   body{font-size:16px}
-  h1{font-size:27px}
-  .wrap{padding:40px 18px 60px}
+  h1{font-size:29px}h2{font-size:23px}
+  .lead{font-size:17px}.big{font-size:20px}
+  .deck{padding:20px 16px 70px}
+  pre code{font-size:14px}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-
-  <header>
-    <span class="brand">explaindoc</span>
-    <h1>スライド一覧</h1>
-    <p class="lead">授業で使うスライドの一覧ページです。リンクはいつでも開けるので、あとから復習にも使ってください。</p>
-    <div class="rule"></div>
-  </header>
-
-  <!--
-    スライドが増えたら、この下に分野セクションを追加する。ひな形:
-
-    <section class="field">
-      <div class="field-h"><span class="name">Python</span><span class="jp">Python</span></div>
-      <div class="cards">
-        <a class="card" href="python/index.html">
-          <span><span class="ttl">単元の地図とチートシート</span><span class="desc">学ぶ順序と構文の一覧</span></span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-        </a>
-        <a class="card" href="python/list-basics.html">
-          <span class="no">03</span>
-          <span><span class="ttl">リストと for 文</span><span class="desc">複数の値をまとめて扱う</span></span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-        </a>
-      </div>
-    </section>
-
-    分野名は Python / Unity (C#) / Java / コンピュータサイエンス。
-    スライドが入ったら、下の .empty ブロックは削除する。
-  -->
-
-  <section class="field">
-    <div class="field-h"><span class="name">CS</span><span class="jp">コンピュータサイエンス</span></div>
-    <div class="cards">
-      <a class="card" href="cs/unix-commands.html">
-        <span class="no">01</span>
-        <span><span class="ttl">Unix / Linux コマンド入門</span><span class="desc">ls・cd・cat・wc・grep とパイプ</span></span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-      </a>
-      <a class="card" href="cs/unix-commands-cheatsheet.html">
-        <span><span class="ttl">コマンド早見表</span><span class="desc">授業で使ったコマンドの一覧。困ったときに</span></span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-      </a>
-    </div>
-  </section>
-
-  <div class="foot">
-    <span>explaindoc</span>
-    <span class="latin">2026-09-05</span>
+<div class="bar" id="bar"></div>
+<div class="deck" id="deck">
+<!-- 表紙。data-title はナビ左下に出る見出し -->
+<section class="slide cover" data-title="表紙">
+  <div class="eyebrow" style="justify-content:center"><span class="part">分野名（英数字のみ）</span></div>
+  <h1>スライドの題名</h1>
+  <p class="sub">ひとことでいうと何の話か</p>
+  <div class="meta">
+    <span class="chip">前提 <b>ここに前提知識</b></span>
+    <span class="chip">所要 <b><span class="latin">90</span>分</b></span>
   </div>
+  <p class="hint"><kbd>→</kbd> または <kbd>Space</kbd> で次へ / <kbd>←</kbd> で戻る</p>
+</section>
+
+<!-- ふつうのスライド。見出し+説明3行+コード1つが上限の目安 -->
+<section class="slide" data-title="見出しの例">
+  <div class="eyebrow"><span class="part">Part 1 — 章の名前</span><span class="bar"></span></div>
+  <h2><span class="cmdname">code</span> — 見出し</h2>
+  <p class="lead">太めの導入文。1行で言い切る。</p>
+  <p>本文。<strong>強調はここ</strong>。用語は <code class="inline">inline code</code>。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">command</span> <span class="c-opt">-x</span> argument</code></pre>
+    <div class="out"><b>実行結果</b>ここに出力</div>
+  </div>
+</section>
+
+<!-- 演習スライド。答えは details で隠す -->
+<section class="slide" data-title="やってみようの例">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <div class="try">
+    <div class="try-t">やってみよう 1</div>
+    <p>指示文。</p>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Bash</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">command</span></code></pre>
+    </div>
+    <details>
+      <summary><svg class="plus" width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>答えを見る</summary>
+      <p class="big" style="color:var(--accent-dark)">答え</p>
+    </details>
+  </div>
+</section>
+
+<!-- 囲みの3種類。note / note warn / note do -->
+<section class="slide" data-title="囲みの例">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2>囲みは3種類</h2>
+  <div class="note">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="#3E6B8A"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>補足（青）</div>
+    <p>知っておくと理解が深まること。</p>
+  </div>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="#D97706"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>注意（橙）</div>
+    <p>ここで間違えやすい、という警告。</p>
+  </div>
+  <div class="note do">
+    <div class="note-t">おすすめ（緑）</div>
+    <p>こうするとよい、という助言。</p>
+  </div>
+</section>
+
+<!-- 表と図。flow は処理の流れを見せるとき -->
+<section class="slide" data-title="表と図の例">
+  <div class="eyebrow"><span class="part">Part 1</span><span class="bar"></span></div>
+  <h2>表と流れ図</h2>
+  <table>
+    <tr><th style="width:24%">見出し</th><th>説明</th></tr>
+    <tr><td><code>a</code></td><td>説明</td></tr>
+    <tr><td><code>b</code></td><td>説明</td></tr>
+  </table>
+  <div class="flow">
+    <span class="box plain">入力</span>
+    <span class="arrow">→</span>
+    <span class="box">処理</span>
+    <span class="arrow">→</span>
+    <span class="box plain">出力</span>
+  </div>
+</section>
+
+<!-- 章の区切り。cover クラスで中央寄せ -->
+<section class="slide cover" data-title="章の区切りの例">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 2</span></div>
+  <h1>章のタイトル</h1>
+  <p class="sub">サブタイトル</p>
+  <p class="big" style="margin-top:24px">ここが山場です、のような一言。</p>
+</section>
 </div>
+
+<nav class="nav">
+  <span class="title" id="navTitle"></span>
+  <span class="ctrl">
+    <button id="prev" type="button" aria-label="前のスライド">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg>
+    </button>
+    <span class="counter"><b id="cur">1</b> / <span id="total">1</span></span>
+    <button id="next" type="button" aria-label="次のスライド">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+    </button>
+  </span>
+</nav>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var elCur = document.getElementById('cur');
+  var elTotal = document.getElementById('total');
+  var elBar = document.getElementById('bar');
+  var elTitle = document.getElementById('navTitle');
+  var btnPrev = document.getElementById('prev');
+  var btnNext = document.getElementById('next');
+  elTotal.textContent = slides.length;
+
+  function show(n, push){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function(s, k){ s.classList.toggle('on', k === i); });
+    elCur.textContent = i + 1;
+    elBar.style.width = ((i + 1) / slides.length * 100) + '%';
+    elTitle.textContent = slides[i].dataset.title || '';
+    btnPrev.disabled = (i === 0);
+    btnNext.disabled = (i === slides.length - 1);
+    slides[i].scrollTop = 0;
+    if (push !== false) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  function fromHash(){
+    var n = parseInt((location.hash || '').replace('#',''), 10);
+    show(isNaN(n) ? 0 : n - 1, false);
+  }
+
+  btnPrev.addEventListener('click', function(){ show(i - 1); });
+  btnNext.addEventListener('click', function(){ show(i + 1); });
+  window.addEventListener('hashchange', fromHash);
+
+  document.addEventListener('keydown', function(e){
+    if (e.target.tagName === 'SUMMARY' && (e.key === ' ' || e.key === 'Enter')) return;
+    switch(e.key){
+      case 'ArrowRight': case 'PageDown': show(i + 1); break;
+      case 'ArrowLeft':  case 'PageUp':   show(i - 1); break;
+      case ' ':          show(e.shiftKey ? i - 1 : i + 1); e.preventDefault(); break;
+      case 'Home':       show(0); break;
+      case 'End':        show(slides.length - 1); break;
+      default: return;
+    }
+  });
+
+  // スマホのスワイプ
+  var x0 = null;
+  document.addEventListener('touchstart', function(e){ x0 = e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 60) show(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  }, {passive:true});
+
+  // コードのコピー
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var code = btn.closest('.code').querySelector('pre code').innerText;
+      navigator.clipboard.writeText(code).then(function(){
+        btn.textContent = 'コピーしました';
+        btn.classList.add('done');
+        setTimeout(function(){ btn.textContent = 'コピー'; btn.classList.remove('done'); }, 1600);
+      });
+    });
+  });
+
+  fromHash();
+})();
+</script>
 </body>
 </html>
