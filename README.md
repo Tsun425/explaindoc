@@ -1,6 +1,6 @@
 # explaindoc
 
-中高生の生徒向けプログラミング解説資料。Google Classroom でリンクを共有して使います。
+中高生の生徒向けプログラミング解説スライド。Google Classroom でリンクを共有して使います。
 
 **公開先: https://tsun425.github.io/explaindoc/**
 
