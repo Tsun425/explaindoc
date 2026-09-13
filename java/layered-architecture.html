@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>スライド一覧 | explaindoc</title>
+<title>レイヤ構成 | explaindoc</title>
 <style>
 @font-face{
   font-family:'Fraunces';font-style:normal;font-weight:300 700;font-display:swap;
@@ -22,130 +22,975 @@
   --mono:"Cascadia Code","Consolas","SF Mono",Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--jp);font-size:17px;line-height:1.9;-webkit-font-smoothing:antialiased}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--jp);
+  font-size:18px;line-height:1.85;-webkit-font-smoothing:antialiased;overflow:hidden;
+}
 .latin{font-family:'Fraunces',serif}
-.wrap{max-width:760px;margin:0 auto;padding:56px 24px 80px}
 
-.brand{font-family:'Fraunces',serif;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:14px;display:block}
-h1{font-size:34px;line-height:1.45;font-weight:700;letter-spacing:-.01em;margin-bottom:14px}
-.lead{color:var(--text-sub);font-size:16px;max-width:56ch}
-.rule{height:1px;background:var(--border);margin:32px 0 40px}
+/* ===== スライドの枠 ===== */
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:44px 28px 74px}
+.slide{
+  display:none;width:100%;max-width:880px;max-height:100%;overflow-y:auto;
+  animation:in .28s cubic-bezier(.16,1,.3,1);
+}
+.slide.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.slide::-webkit-scrollbar{width:8px}
+.slide::-webkit-scrollbar-thumb{background:var(--border);border-radius:var(--r-full)}
 
-/* 分野セクション（資料が増えたらここに追加する） */
-.field{margin-bottom:40px}
-.field-h{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border)}
-.field-h .name{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--accent-dark)}
-.field-h .jp{font-size:14px;color:var(--text-sub)}
-.cards{display:grid;gap:10px}
-.card{
+/* ===== 見出し ===== */
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.eyebrow .part{font-family:'Fraunces',serif;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-dark)}
+.eyebrow .bar{flex:1;height:1px;background:var(--border);max-width:60px}
+h1{font-size:40px;line-height:1.4;font-weight:700;letter-spacing:-.02em;margin-bottom:18px}
+h2{font-size:30px;line-height:1.45;font-weight:700;letter-spacing:-.01em;margin-bottom:18px}
+h2 .cmdname{font-family:var(--mono);color:var(--accent-dark);font-size:.92em}
+h3{font-size:19px;font-weight:700;margin:22px 0 10px}
+p{margin-bottom:14px}
+p:last-child,ul:last-child,.code:last-child{margin-bottom:0}
+strong{color:var(--accent-dark)}
+ul,ol{padding-left:1.4em;margin-bottom:14px}
+li{margin-bottom:7px}
+code.inline{font-family:var(--mono);font-size:.88em;background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px 6px;color:var(--accent-dark)}
+.lead{font-size:20px;color:var(--text-sub)}
+.big{font-size:26px;font-weight:700;line-height:1.6}
+
+/* ===== 表紙 ===== */
+.cover{text-align:center}
+.cover .sub{font-size:19px;color:var(--text-sub);margin-bottom:28px}
+.cover .meta{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-full);padding:6px 16px;font-size:14px;color:var(--text-sub)}
+.chip b{color:var(--text);font-weight:600}
+.hint{margin-top:30px;font-size:14px;color:var(--text-sub)}
+kbd{font-family:var(--mono);font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-bottom-width:2px;border-radius:var(--r-sm);padding:2px 7px;color:var(--text)}
+
+/* ===== コードブロック ===== */
+.code{background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-md);margin:16px 0;overflow:hidden;box-shadow:var(--sh-1)}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:7px 10px 7px 15px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.55)}
+.code-lang{font-family:'Fraunces',serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-sub)}
+.copy{font-family:var(--jp);font-size:12.5px;color:var(--accent-dark);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-full);padding:4px 13px;cursor:pointer;transition:all .2s cubic-bezier(.16,1,.3,1)}
+.copy:hover{border-color:var(--accent);color:var(--accent)}
+.copy.done{color:var(--success);border-color:var(--success)}
+pre{margin:0;padding:14px 15px;overflow-x:auto}
+pre code{font-family:var(--mono);font-size:16px;line-height:1.8;color:var(--text)}
+.c-cmd{color:var(--accent-dark);font-weight:700}
+.c-opt{color:var(--info)}
+.c-pipe{color:var(--accent);font-weight:700}
+.c-com{color:var(--text-sub);font-style:italic}
+.c-str{color:var(--success)}
+.out{border-top:1px dashed var(--border);background:rgba(255,255,255,.5);padding:11px 15px;font-family:var(--mono);font-size:14.5px;color:var(--text-sub);line-height:1.75;white-space:pre-wrap}
+.out b{display:block;font-family:var(--jp);font-size:11px;letter-spacing:.1em;color:var(--text-sub);margin-bottom:5px;font-weight:700}
+
+/* ===== 手順ステップ ===== */
+.steps{list-style:none;counter-reset:st;margin:16px 0;padding:0}
+.steps li{counter-increment:st;position:relative;padding:0 0 16px 42px;border-left:2px solid var(--border);margin-left:13px}
+.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+.steps li::before{content:counter(st);position:absolute;left:-14px;top:-3px;width:27px;height:27px;border-radius:var(--r-full);background:var(--accent-dark);color:#fff;font-family:'Fraunces',serif;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.steps b{display:block;margin-bottom:3px}
+
+/* ===== 囲み ===== */
+.note{border:1px solid var(--border);border-left:4px solid var(--info);background:var(--surface);border-radius:var(--r-md);padding:14px 18px;margin:16px 0;box-shadow:var(--sh-1)}
+.note.warn{border-left-color:var(--warning)}
+.note.do{border-left-color:var(--success)}
+.note-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;margin-bottom:5px}
+.note p{font-size:16px;margin-bottom:0}
+
+/* ===== やってみよう ===== */
+.try{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--sh-1)}
+.try-t{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:12px}
+details{border-top:1px solid var(--border);margin-top:14px;padding-top:12px}
+summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--accent-dark);border:1px solid var(--border);border-radius:var(--r-full);padding:5px 15px;transition:all .2s cubic-bezier(.16,1,.3,1);user-select:none}
+summary::-webkit-details-marker{display:none}
+summary:hover{border-color:var(--accent);color:var(--accent)}
+details[open] summary{margin-bottom:12px}
+details[open] summary .plus{transform:rotate(45deg)}
+.plus{transition:transform .2s cubic-bezier(.16,1,.3,1)}
+
+/* ===== 表 ===== */
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin:16px 0;box-shadow:var(--sh-1)}
+th{background:var(--surface-alt);font-size:13px;letter-spacing:.06em;text-align:left;padding:9px 14px;border-bottom:1px solid var(--border)}
+td{padding:9px 14px;font-size:16px;border-bottom:1px solid var(--surface-alt)}
+tr:last-child td{border-bottom:none}
+td code,th code{font-family:var(--mono);font-size:.9em;color:var(--accent-dark)}
+
+/* ===== パイプの図 ===== */
+.flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px 18px;margin:18px 0;box-shadow:var(--sh-1)}
+.flow .box{background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-md);padding:9px 15px;font-family:var(--mono);font-size:15px;color:var(--accent-dark);font-weight:700}
+.flow .box.plain{font-family:var(--jp);font-weight:400;color:var(--text-sub);background:transparent;border-style:dashed}
+.flow .arrow{color:var(--accent);font-size:19px}
+
+/* ===== ナビゲーション ===== */
+.nav{position:fixed;left:0;right:0;bottom:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(251,247,242,.94);border-top:1px solid var(--border);backdrop-filter:blur(8px);z-index:10}
+.nav .title{font-size:12.5px;color:var(--text-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav .ctrl{display:flex;align-items:center;gap:8px}
+.nav button{width:36px;height:36px;border-radius:var(--r-full);border:1px solid var(--border);background:var(--surface);color:var(--accent-dark);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s cubic-bezier(.16,1,.3,1)}
+.nav button:hover:not(:disabled){border-color:var(--accent);color:var(--accent);box-shadow:var(--sh-2)}
+.nav button:disabled{opacity:.3;cursor:default}
+.counter{font-family:'Fraunces',serif;font-size:15px;color:var(--text-sub);min-width:66px;text-align:center;font-variant-numeric:tabular-nums}
+.counter b{color:var(--accent-dark)}
+.bar{position:fixed;top:0;left:0;height:3px;background:var(--accent-dark);z-index:11;transition:width .25s cubic-bezier(.16,1,.3,1)}
+
+/* ===== 印刷 ===== */
+@media print{
+  body{overflow:visible;font-size:11pt}
+  .deck{position:static;display:block;padding:0}
+  .slide{display:block!important;max-width:none;max-height:none;overflow:visible;page-break-after:always;padding:16pt 0;animation:none}
+  .nav,.bar,.copy,.hint{display:none!important}
+  .code,.note,.try,table,.flow{box-shadow:none;break-inside:avoid}
+  details summary{display:none}
+  details[open],details{display:block;border-top:none}
+  h1{font-size:22pt}h2{font-size:17pt}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  h1{font-size:29px}h2{font-size:23px}
+  .lead{font-size:17px}.big{font-size:20px}
+  .deck{padding:20px 16px 70px}
+  pre code{font-size:14px}
+}
+
+/* ===== レイヤの図 =====
+   .flow の縦積み変種。色・角丸・影・余白はすべて既存のCSS変数のまま。
+   新しい配色は定義していない。 */
+.flow.vert{flex-direction:column;gap:6px}
+.flow.vert .box{min-width:min(330px,100%);text-align:center}
+.flow.vert .box.layer{font-family:var(--jp);font-weight:700;color:var(--text);padding:11px 18px}
+.flow.vert .box.layer small{display:block;font-family:var(--jp);font-weight:400;font-size:13px;line-height:1.6;color:var(--text-sub);margin-top:1px}
+.flow.vert .arrow{font-size:20px;line-height:1}
+.flow .arrow.ng{color:var(--error)}
+.flow .lbl{font-size:13px;line-height:1.6;color:var(--text-sub);font-family:var(--jp)}
+.flow .lbl.ng{color:var(--error);font-weight:700}
+.flow.side{flex-direction:row;align-items:stretch;gap:14px}
+.flow.side .col{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1 1 330px}
+.flow.side .aside{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;flex:0 1 200px;border:1px dashed var(--border);border-radius:var(--r-md);padding:12px;font-size:13.5px;line-height:1.7;color:var(--text-sub)}
+.flow.side .aside b{font-family:var(--mono);font-size:14px;color:var(--accent-dark)}
+@media (max-width:640px){.flow.side{flex-direction:column}}
+
+/* ===== リンクと「次に読む」（_template/sample-lesson.html と同じ定義） ===== */
+a{color:var(--accent-dark)}
+a:hover{color:var(--accent)}
+.note.stuck{border-left-color:var(--error)}
+.next{display:grid;gap:12px;margin-top:8px}
+.next a{
   display:flex;align-items:center;justify-content:space-between;gap:16px;
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
-  padding:15px 18px;text-decoration:none;color:var(--text);box-shadow:var(--sh-1);
-  transition:all .2s cubic-bezier(.16,1,.3,1);
+  padding:16px 20px;text-decoration:none;color:var(--text);
+  transition:all .2s cubic-bezier(.16,1,.3,1);box-shadow:var(--sh-1);
 }
-.card:hover{border-color:var(--accent);box-shadow:var(--sh-2);transform:translateY(-1px)}
-.card .no{font-family:'Fraunces',serif;font-size:13px;color:var(--accent);min-width:26px}
-.card .ttl{font-weight:700;font-size:16px;display:block}
-.card .desc{font-size:13.5px;color:var(--text-sub);display:block;margin-top:2px}
+.next a:hover{border-color:var(--accent);box-shadow:var(--sh-2);transform:translateY(-1px)}
+.next .lbl{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-sub);display:block;margin-bottom:3px;font-family:var(--jp)}
+.next .ttl{font-weight:700;font-size:16px}
+.next .soon{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  border:1px dashed var(--border);border-radius:var(--r-md);padding:16px 20px;color:var(--text-sub)}
 
-/* 空の状態 */
-.empty{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
-  padding:52px 32px;text-align:center;box-shadow:var(--sh-1);
-}
-.empty svg{margin-bottom:18px}
-.empty h2{font-size:19px;font-weight:700;margin-bottom:8px}
-.empty p{color:var(--text-sub);font-size:15.5px}
-
-.foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--border);font-size:13px;color:var(--text-sub);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-@media (max-width:520px){
-  body{font-size:16px}
-  h1{font-size:27px}
-  .wrap{padding:40px 18px 60px}
+/* ===== 印刷（CLAUDE.md: もくじと「次に読む」を隠す） ===== */
+@media print{
+  .no-print,.next{display:none!important}
+  .next a{box-shadow:none;break-inside:avoid}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-
-  <header>
-    <span class="brand">explaindoc</span>
-    <h1>スライド一覧</h1>
-    <p class="lead">授業で使うスライドの一覧ページです。リンクはいつでも開けるので、あとから復習にも使ってください。</p>
-    <div class="rule"></div>
-  </header>
-
-  <!--
-    スライドが増えたら、この下に分野セクションを追加する。ひな形:
-
-    <section class="field">
-      <div class="field-h"><span class="name">Python</span><span class="jp">Python</span></div>
-      <div class="cards">
-        <a class="card" href="python/index.html">
-          <span><span class="ttl">単元の地図とチートシート</span><span class="desc">学ぶ順序と構文の一覧</span></span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-        </a>
-        <a class="card" href="python/list-basics.html">
-          <span class="no">03</span>
-          <span><span class="ttl">リストと for 文</span><span class="desc">複数の値をまとめて扱う</span></span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-        </a>
-      </div>
-    </section>
-
-    分野名は Python / Unity (C#) / Java / コンピュータサイエンス。
-    スライドが入ったら、下の .empty ブロックは削除する。
-  -->
-
-  <section class="field">
-    <div class="field-h"><span class="name">Python</span><span class="jp">Python</span></div>
-    <div class="cards">
-      <a class="card" href="python/python-cheatsheet.html">
-        <span><span class="ttl">Python 早見表</span><span class="desc">変数・if・for・リスト・関数。Colab で書くときの一覧</span></span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-      </a>
-    </div>
-  </section>
-
-  <section class="field">
-    <div class="field-h"><span class="name">Java</span><span class="jp">Java / Spring Boot</span></div>
-    <div class="cards">
-      <a class="card" href="java/layered-architecture.html">
-        <span><span class="ttl">レイヤ構成</span><span class="desc">3層に分けて、上から下へ呼ぶ。インタフェースと DI は何のためにあるのか</span></span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-dark)" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-      </a>
-    </div>
-  </section>
-
-  <section class="field">
-    <div class="field-h"><span class="name">CS</span><span class="jp">コンピュータサイエンス</span></div>
-    <div class="cards">
-      <a class="card" href="cs/unix-commands.html">
-        <span class="no">01</span>
-        <span><span class="ttl">Unix / Linux コマンド入門</span><span class="desc">ls・cd・cat・wc・grep とパイプ</span></span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-      </a>
-      <a class="card" href="cs/unix-commands-cheatsheet.html">
-        <span><span class="ttl">コマンド早見表</span><span class="desc">授業で使ったコマンドの一覧。困ったときに</span></span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-      </a>
-    </div>
-  </section>
-
-  <section class="field">
-    <div class="field-h"><span class="name">Common</span><span class="jp">全分野共通</span></div>
-    <div class="cards">
-      <a class="card" href="cs/how-to-get-unstuck.html">
-        <span><span class="ttl">詰まったときの動き方</span><span class="desc">エラーの読み方・検索の仕方・ChatGPT への聞き方</span></span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A34A2B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
-      </a>
-    </div>
-  </section>
-
-  <div class="foot">
-    <span>explaindoc</span>
-    <span class="latin">2026-09-13</span>
+<div class="bar" id="bar"></div>
+<div class="deck" id="deck">
+<!-- 1 表紙 -->
+<section class="slide cover" data-title="表紙">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Java</span></div>
+  <h1>レイヤ構成</h1>
+  <p class="sub">部品を役割で分けて、上から下へ呼ぶ</p>
+  <div class="meta">
+    <span class="chip">対象 <b>高校生</b></span>
+    <span class="chip">前提 <b>インタフェース・DI・Spring MVC</b></span>
+    <span class="chip">所要 <b><span class="latin">90</span>分</b></span>
+    <span class="chip">最終更新 <b class="latin">2026-09-12</b></span>
   </div>
+  <p class="hint"><kbd>→</kbd> または <kbd>Space</kbd> で次へ / <kbd>←</kbd> で戻る</p>
+</section>
+
+<!-- 2 ゴール -->
+<section class="slide" data-title="この回のゴール">
+  <div class="eyebrow"><span class="part">Goal</span><span class="bar"></span></div>
+  <h2>この回のゴール</h2>
+  <p class="lead">終わったとき、この3つが言えていれば合格です。</p>
+  <ol class="steps">
+    <li><b>自分のクラスを3つの層に仕分けできる</b><code class="inline">ReviewController</code> はどこか。<code class="inline">RegistServiceImpl</code> はどこか。</li>
+    <li><b>「この呼び出しはNG」が指摘できる</b>なぜ Controller から Repository を直接呼んではいけないのか。</li>
+    <li><b>インタフェースと DI が何のために挟まっているか説明できる</b>ここが今日いちばん大事なところです。</li>
+  </ol>
+  <div class="note">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>今日は新しい文法は出てきません</div>
+    <p>出てくるコードは、すべて <code class="inline">SpringStart12</code> ですでに書いたものです。<strong>並べ方の話</strong>だけをします。</p>
+  </div>
+</section>
+
+<!-- 3 もくじ -->
+<section class="slide no-print" data-title="もくじ">
+  <div class="eyebrow"><span class="part">Contents</span><span class="bar"></span></div>
+  <h2>もくじ</h2>
+  <table>
+    <tr><th style="width:78px"><span class="latin">01</span></th><td><b>レイヤ構成とは</b><br><span style="color:var(--text-sub);font-size:14.5px">部品を役割で3つに分ける</span></td></tr>
+    <tr><th><span class="latin">02</span></th><td><b>呼び出しは上から下へ</b><br><span style="color:var(--text-sub);font-size:14.5px">逆流も層飛ばしもNG</span></td></tr>
+    <tr><th><span class="latin">03</span></th><td><b>自分のプロジェクトを当てはめる</b><br><span style="color:var(--text-sub);font-size:14.5px">どのクラスがどの層か</span></td></tr>
+    <tr><th><span class="latin">04</span></th><td><b>密結合と疎結合</b> ← 山場<br><span style="color:var(--text-sub);font-size:14.5px">インタフェースと DI は何のためにあるのか</span></td></tr>
+    <tr><th><span class="latin">05</span></th><td><b>レイヤ構成の利点</b></td></tr>
+    <tr><th><span class="latin">06</span></th><td><b>MVC との関係</b><br><span style="color:var(--text-sub);font-size:14.5px">同じ「M」が2つの違うものを指している</span></td></tr>
+  </table>
+</section>
+
+<!-- 4 Part1 扉 -->
+<section class="slide cover" data-title="01 レイヤ構成とは">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 01</span></div>
+  <h1>レイヤ構成とは</h1>
+  <p class="sub">部品を役割で分けて、層に積む</p>
+</section>
+
+<!-- 5 いま作っているもの -->
+<section class="slide" data-title="いま作っているもの">
+  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
+  <h2>いま作っているもの</h2>
+  <p class="lead">レビュー登録アプリ。画面は3つでした。</p>
+  <div class="flow">
+    <span class="box plain">入力</span>
+    <span class="arrow">→</span>
+    <span class="box plain">確認</span>
+    <span class="arrow">→</span>
+    <span class="box plain">完了</span>
+  </div>
+  <p>やっていることは、<strong>入力を受け取って、チェックして、保存する</strong>。それだけです。<br>
+  では、この処理を書くコードは<strong>どこに置けばいい</strong>のでしょうか。</p>
+</section>
+
+<!-- 6 全部1クラスに書いたら -->
+<section class="slide" data-title="全部1つのクラスに書いたら">
+  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
+  <h2>もし、全部1つのクラスに書いたら</h2>
+  <p>動きます。動きますが、こうなります。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Java</span></div>
+<pre><code><span class="c-cmd">@Controller</span>
+<span class="c-cmd">public class</span> ReviewController {
+
+    <span class="c-cmd">@PostMapping</span>(<span class="c-str">"/confirm-regist-review"</span>)
+    <span class="c-cmd">public</span> String confirm(ReviewRegistForm form) {
+        <span class="c-com">// 入力チェック</span>
+        <span class="c-com">// 評価が 1〜5 かどうかの業務ルール</span>
+        <span class="c-com">// データベースに接続する</span>
+        <span class="c-com">// SQL を組み立てる</span>
+        <span class="c-com">// 保存する</span>
+        <span class="c-com">// 接続を閉じる</span>
+        <span class="c-com">// 画面に返す</span>
+    }
+}</code></pre>
+  </div>
+  <p><strong>1つのクラスが、性質の違う仕事を全部かかえている</strong>状態です。</p>
+</section>
+
+<!-- 7 3層に分ける -->
+<section class="slide" data-title="3つの層に分ける">
+  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
+  <h2>役割で分けて、層に積む</h2>
+  <p class="lead">システム開発では、部品を役割で分類して層（レイヤ）にするのが定石です。</p>
+  <div class="flow vert">
+    <span class="box layer">プレゼン層<small>ユーザとのやり取り。リクエストを受けてレスポンスを返す</small></span>
+    <span class="arrow">↓</span>
+    <span class="box layer">サービス層<small>業務処理。このアプリならではのルールを書く</small></span>
+    <span class="arrow">↓</span>
+    <span class="box layer">インフラ層<small>データアクセス。保存したり、取り出したり</small></span>
+  </div>
+  <p>層の分け方には流派がありますが、この講座では<strong>この3つ</strong>で考えます。</p>
+</section>
+
+<!-- 8 Part2 扉 -->
+<section class="slide cover" data-title="02 呼び出しは上から下へ">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 02</span></div>
+  <h1>呼び出しは上から下へ</h1>
+  <p class="sub">層に分けたときの、いちばん大事なルール</p>
+  <p class="big" style="margin-top:24px">呼ぶ向きを、ひとつに統一する。</p>
+</section>
+
+<!-- 9 呼ぶ向き -->
+<section class="slide" data-title="呼ぶのは上から下へ">
+  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
+  <h2>呼ぶのは、上から下へ</h2>
+  <p>プレゼン層は<strong>サービス層を呼んで</strong>、結果を受け取る。<br>
+  サービス層は<strong>インフラ層を呼んで</strong>、結果を受け取る。</p>
+  <div class="flow vert">
+    <span class="box layer">プレゼン層</span>
+    <span class="arrow">↓</span>
+    <span class="lbl">呼ぶ</span>
+    <span class="arrow">↓</span>
+    <span class="box layer">サービス層</span>
+    <span class="arrow">↓</span>
+    <span class="lbl">呼ぶ</span>
+    <span class="arrow">↓</span>
+    <span class="box layer">インフラ層</span>
+  </div>
+  <p>必ず<strong>1段ずつ、順番に伝っていく</strong>。この感覚を持ってください。</p>
+</section>
+
+<!-- 10 逆向きはNG -->
+<section class="slide" data-title="逆向きはNG">
+  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
+  <h2>やってはいけない ①　逆向きに呼ぶ</h2>
+  <div class="flow vert">
+    <span class="box layer">プレゼン層</span>
+    <span class="arrow ng">↑</span>
+    <span class="lbl ng">✕ サービス層がプレゼン層を呼ぶ</span>
+    <span class="arrow ng">↑</span>
+    <span class="box layer">サービス層</span>
+  </div>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>注意　下の層は、上の層を知らない</div>
+    <p>サービス層は「誰に呼ばれているか」を知りません。画面から呼ばれても、あとで別のプログラムから呼ばれても、同じように動きます。<strong>知らないからこそ、使い回せる</strong>のです。</p>
+  </div>
+</section>
+
+<!-- 11 層飛ばしもNG -->
+<section class="slide" data-title="層飛ばしもNG">
+  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
+  <h2>やってはいけない ②　層を飛び越える</h2>
+  <div class="flow side">
+    <span class="col">
+      <span class="box layer">プレゼン層</span>
+      <span class="arrow ng">↓</span>
+      <span class="lbl ng">✕ サービス層を飛ばしている</span>
+      <span class="arrow ng">↓</span>
+      <span class="box layer">インフラ層</span>
+    </span>
+    <span class="aside"><b>サービス層</b>飛ばされて<br>空っぽになる</span>
+  </div>
+  <p>Controller から Repository を直接呼ぶ、が典型例です。<strong>1回だけなら早い。</strong>でも、これを許すと業務処理があちこちに散らばり、層に分けた意味がなくなります。</p>
+</section>
+
+<!-- 12 なぜ守るのか -->
+<section class="slide" data-title="なぜこの向きを守るのか">
+  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
+  <h2>なぜ、向きを守るのか</h2>
+  <p class="lead">「指揮系統」を一本にするためです。</p>
+  <p>向きが決まっていると、コードを読むとき<strong>探す場所が決まります</strong>。</p>
+  <table>
+    <tr><th style="width:44%">知りたいこと</th><th>見に行く場所</th></tr>
+    <tr><td>この画面はどのURLで出る？</td><td>プレゼン層</td></tr>
+    <tr><td>評価は1〜5、というルールはどこ？</td><td>サービス層</td></tr>
+    <tr><td>保存の仕方を変えたい</td><td>インフラ層</td></tr>
+  </table>
+  <p>向きがバラバラだと、この表が作れません。<strong>全部を読まないと分からない</strong>コードになります。</p>
+</section>
+
+<!-- 13 Part3 扉 -->
+<section class="slide cover" data-title="03 自分のプロジェクトを当てはめる">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 03</span></div>
+  <h1>自分のプロジェクトを<br>当てはめる</h1>
+  <p class="sub"><span class="latin">SpringStart12</span> のクラスを3つの層に仕分ける</p>
+</section>
+
+<!-- 14 パッケージのツリー -->
+<section class="slide" data-title="パッケージの構成">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2>パッケージの分け方が、そのまま層</h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Package</span></div>
+<pre><code>com.example.demo
+├─ controller
+│  └─ ReviewController.java        <span class="c-com">プレゼン層</span>
+├─ service
+│  ├─ RegistService.java           <span class="c-com">サービス層（インタフェース）</span>
+│  └─ RegistServiceImpl.java       <span class="c-com">サービス層（実装）</span>
+├─ repository
+│  ├─ RegistRepository.java        <span class="c-com">インフラ層（インタフェース）</span>
+│  └─ RegistRepositoryImpl.java    <span class="c-com">インフラ層（実装）</span>
+├─ entity
+│  └─ Review.java                  <span class="c-com">データの入れ物</span>
+└─ form
+   └─ ReviewRegistForm.java        <span class="c-com">データの入れ物</span></code></pre>
+  </div>
+  <p><strong>ディレクトリを見れば、どの層の部品かが分かる。</strong>これも層に分ける効果のひとつです。</p>
+</section>
+
+<!-- 15 プレゼン層 Controller -->
+<section class="slide" data-title="プレゼン層 コントローラ">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2>プレゼン層 ①　コントローラ</h2>
+  <p>リクエストを受け取り、<strong>サービス層を呼び</strong>、結果を View に渡す。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Java</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">@Controller</span>
+<span class="c-cmd">@RequiredArgsConstructor</span>
+<span class="c-cmd">public class</span> ReviewController {
+
+    <span class="c-cmd">private final</span> RegistService service;
+
+    <span class="c-cmd">@PostMapping</span>(<span class="c-str">"/confirm-regist-review"</span>)
+    <span class="c-cmd">public</span> String confirmRegistReview(...) {
+        Review r = <span class="c-cmd">new</span> Review();
+        r.setRestaurantId(form.getRestaurantId());
+        <span class="c-com">// …残りの項目も詰める…</span>
+        service.regist(r);   <span class="c-com">// ← サービス層を呼ぶ</span>
+        <span class="c-cmd">return</span> <span class="c-str">"complete-regist-review"</span>;
+    }
+}</code></pre>
+  </div>
+  <p>保存の仕方は<strong>1行も書かれていません</strong>。それはインフラ層の仕事だからです。</p>
+</section>
+
+<!-- 16 プレゼン層 View -->
+<section class="slide" data-title="プレゼン層 View">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2>プレゼン層 ②　<span class="cmdname">View</span></h2>
+  <p>プレゼン層は、コントローラだけではありません。<strong>Thymeleaf の HTMLテンプレートも同じ層</strong>です。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">HTML</span><button class="copy" type="button">コピー</button></div>
+<pre><code>&lt;<span class="c-cmd">form</span> <span class="c-opt">th:action</span>=<span class="c-str">"@{/regist-review}"</span> <span class="c-opt">method</span>=<span class="c-str">"POST"</span>
+      <span class="c-opt">th:object</span>=<span class="c-str">"${reviewRegistForm}"</span>&gt;
+  【店舗ID】&lt;<span class="c-cmd">br</span>&gt;
+  &lt;<span class="c-cmd">input</span> <span class="c-opt">type</span>=<span class="c-str">"text"</span> <span class="c-opt">th:field</span>=<span class="c-str">"*{restaurantId}"</span>&gt;
+&lt;/<span class="c-cmd">form</span>&gt;</code></pre>
+  </div>
+  <p>コントローラが<strong>受け付ける係</strong>、View が<strong>見せる係</strong>。2人で「ユーザとのやり取り」を担当しています。</p>
+</section>
+
+<!-- 17 サービス層 -->
+<section class="slide" data-title="サービス層">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2>サービス層　業務処理</h2>
+  <p>このアプリならではの処理を書く場所。<strong>アプリの中核</strong>です。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Java</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">@Service</span>
+<span class="c-cmd">@RequiredArgsConstructor</span>
+<span class="c-cmd">public class</span> RegistServiceImpl <span class="c-cmd">implements</span> RegistService {
+
+    <span class="c-cmd">private final</span> RegistRepository repository;
+
+    <span class="c-cmd">@Override</span>
+    <span class="c-cmd">public void</span> regist(Review review) {
+        repository.add(review);   <span class="c-com">// ← インフラ層を呼ぶ</span>
+    }
+}</code></pre>
+  </div>
+  <p>いまは呼んでいるだけですが、<strong>「同じ店に同じ人が二重投稿していないか」</strong>のようなルールを足すなら、書く場所はここです。</p>
+</section>
+
+<!-- 18 インフラ層 -->
+<section class="slide" data-title="インフラ層">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2>インフラ層　データアクセス</h2>
+  <p>保存する、取り出す。<strong>データベースとのやり取りだけ</strong>を担当します。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Java</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">@Repository</span>
+<span class="c-cmd">public class</span> RegistRepositoryImpl <span class="c-cmd">implements</span> RegistRepository {
+
+    <span class="c-cmd">@Override</span>
+    <span class="c-cmd">public void</span> add(Review review) {
+        System.out.println(<span class="c-str">"---登録---"</span>);
+        System.out.println(review);
+    }
+}</code></pre>
+  </div>
+  <div class="note">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>気づきましたか</div>
+    <p>まだ<strong>データベースに保存していません。</strong>コンソールに出しているだけです。この事実が、あとで効いてきます。</p>
+  </div>
+</section>
+
+<!-- 19 アノテーション対応表 -->
+<section class="slide" data-title="アノテーションと層の対応">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2>役割は、アノテーションで示す</h2>
+  <p>Spring には、役割ごとに付けるアノテーションが用意されています。</p>
+  <table>
+    <tr><th style="width:30%">アノテーション</th><th style="width:26%">層</th><th>役割</th></tr>
+    <tr><td><code>@Controller</code></td><td>プレゼン層</td><td>リクエストを受ける</td></tr>
+    <tr><td><code>@Service</code></td><td>サービス層</td><td>業務処理</td></tr>
+    <tr><td><code>@Repository</code></td><td>インフラ層</td><td>データアクセス</td></tr>
+    <tr><td><code>@Component</code></td><td>上の3つ以外</td><td>共通部品、補助的な部品</td></tr>
+  </table>
+  <p>これを付けると、<strong>役割がはっきりする</strong>のに加えて、そのクラスが Bean として DIコンテナに入ります。<code class="inline">@Component</code> は「3層のどれとも言いにくいが DI で管理したい」部品に使う、いわば受け皿です。</p>
+</section>
+
+<!-- 20 entity と form はどの層か -->
+<section class="slide" data-title="Review と ReviewRegistForm はどの層か">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2><span class="cmdname">Review</span> と <span class="cmdname">ReviewRegistForm</span> はどの層？</h2>
+  <p class="lead">答え：<strong>どの層でもありません。</strong></p>
+  <div class="flow side">
+    <span class="col">
+      <span class="box layer">プレゼン層</span>
+      <span class="arrow">↓</span>
+      <span class="box layer">サービス層</span>
+      <span class="arrow">↓</span>
+      <span class="box layer">インフラ層</span>
+    </span>
+    <span class="aside"><b>Review</b>層をまたいで<br>運ばれていく<br>データの入れ物</span>
+  </div>
+  <p>レイヤは<strong>「処理」の分け方</strong>です。この2つは処理をしません。<code class="inline">Review</code> は Controller で作られ、Service を通り、Repository まで<strong>運ばれる荷物</strong>です。荷物は、どの部屋の持ち物でもありません。</p>
+</section>
+
+<!-- 21 なぜ form と entity が別なのか -->
+<section class="slide" data-title="form と entity が別な理由">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2>では、なぜ入れ物が2つあるのか</h2>
+  <p>中身はほとんど同じなのに、<code class="inline">ReviewRegistForm</code> と <code class="inline">Review</code> が別々にあります。<strong>形を決めている都合が違う</strong>からです。</p>
+  <table>
+    <tr><th style="width:38%">入れ物</th><th>形を決めるもの</th></tr>
+    <tr><td><code>ReviewRegistForm</code></td><td><strong>画面の都合。</strong>入力欄の並び、入力チェックのメッセージ</td></tr>
+    <tr><td><code>Review</code></td><td><strong>保存の都合。</strong>保存しておきたいデータの形</td></tr>
+  </table>
+  <p>この2つは<strong>変わるタイミングが違います</strong>。1つにまとめると、画面に入力欄を1つ足しただけで保存側まで影響が届きます。だから Controller で<strong>詰め替え</strong>ているのです。</p>
+</section>
+
+<!-- 22 Part4 扉 -->
+<section class="slide cover" data-title="04 密結合と疎結合">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 04</span></div>
+  <h1>密結合と疎結合</h1>
+  <p class="sub">インタフェースと <span class="latin">DI</span> は、何のために挟まっているのか</p>
+  <p class="big" style="margin-top:24px">ここが山場です。</p>
+</section>
+
+<!-- 23 new で書いたら -->
+<section class="slide" data-title="もし new で書いたら">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>もし、インタフェースも <span class="cmdname">DI</span> も使わなかったら</h2>
+  <p>層に分けるだけなら、こう書いても動きます。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Java</span></div>
+<pre><code><span class="c-cmd">@Controller</span>
+<span class="c-cmd">public class</span> ReviewController {
+    <span class="c-com">// 使いたいクラスを、自分で new する</span>
+    <span class="c-cmd">private</span> RegistServiceImpl service = <span class="c-cmd">new</span> RegistServiceImpl();
+}
+
+<span class="c-cmd">@Service</span>
+<span class="c-cmd">public class</span> RegistServiceImpl {
+    <span class="c-cmd">private</span> RegistRepositoryImpl repository = <span class="c-cmd">new</span> RegistRepositoryImpl();
+}</code></pre>
+  </div>
+  <p>層は3つに分かれています。呼ぶ向きも守れています。<strong>それでも、これは良くない状態です。</strong></p>
+</section>
+
+<!-- 24 密結合の図 -->
+<section class="slide" data-title="密結合">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>これを「密結合」といいます</h2>
+  <p><code class="inline">ReviewController</code> のコードの中に、<strong><code class="inline">RegistServiceImpl</code> という名前が書かれてしまっている</strong>。ここが問題です。</p>
+  <div class="flow vert">
+    <span class="box layer">ReviewController<small>中に RegistServiceImpl と書いてある</small></span>
+    <span class="lbl ng">密結合</span>
+    <span class="box layer">RegistServiceImpl<small>中に RegistRepositoryImpl と書いてある</small></span>
+    <span class="lbl ng">密結合</span>
+    <span class="box layer">RegistRepositoryImpl</span>
+  </div>
+  <p>上の層が、下の層の<strong>具体的なクラス名を知っている</strong>状態です。</p>
+</section>
+
+<!-- 25 困ること -->
+<section class="slide" data-title="密結合で困ること">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>何が困るのか</h2>
+  <p class="lead">部品を<strong>取り替えたくなったとき</strong>に困ります。</p>
+  <table>
+    <tr><th style="width:46%">やりたいこと</th><th>密結合だと</th></tr>
+    <tr><td>業務処理を <code>RegistServiceImpl</code> から別の実装に替えたい</td><td><strong>ReviewController も直す</strong></td></tr>
+    <tr><td>保存先をコンソールからデータベースに替えたい</td><td><strong>RegistServiceImpl も直す</strong></td></tr>
+  </table>
+  <p>替えたいのは1か所なのに、<strong>それを名指ししている上の層まで巻き添えになる</strong>。これを「影響範囲が広い」といいます。</p>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>注意　層に分けただけでは足りない</div>
+    <p>ディレクトリを分けても、呼ぶ向きを守っても、<strong>名指ししていたら独立していません。</strong></p>
+  </div>
+</section>
+
+<!-- 26 2手でほどく -->
+<section class="slide" data-title="2手でほどく">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>ほどく手順は2つだけ</h2>
+  <p class="lead">名指しをやめさせます。</p>
+  <ol class="steps">
+    <li><b>層と層のあいだにインタフェースを挟む</b>上の層は、具体的なクラスではなく<strong>インタフェースの型</strong>を使う。</li>
+    <li><b><span class="latin">DI</span> で中身を入れてもらう</b>「どの実装を使うか」は自分で決めず、<strong>Spring に入れてもらう</strong>。</li>
+  </ol>
+  <p>この2つはすでに習ったものです。今日は<strong>それがレイヤ構成にどう効くのか</strong>を見ます。</p>
+</section>
+
+<!-- 27 インタフェースを挟む -->
+<section class="slide" data-title="① インタフェースを挟む">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>① 　インタフェースを挟む</h2>
+  <p>サービス層の入口として、<strong>できることだけを書いた</strong>インタフェースを置きます。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Java</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">package</span> com.example.demo.service;
+
+<span class="c-cmd">public interface</span> RegistService {
+
+    <span class="c-cmd">void</span> regist(Review review);
+
+}</code></pre>
+  </div>
+  <p><strong>どう保存するかは書いてありません。</strong>「レビューを登録できる」という約束だけです。上の層に必要なのは、この約束だけです。</p>
+</section>
+
+<!-- 28 実装クラス -->
+<section class="slide" data-title="① 実装クラスをつくる">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>① 　その約束を守るクラスをつくる</h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Java</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">@Service</span>
+<span class="c-cmd">public class</span> RegistServiceImpl <span class="c-cmd">implements</span> RegistService {
+    ...
+}</code></pre>
+  </div>
+  <p>これで <code class="inline">ReviewController</code> は、<code class="inline">RegistServiceImpl</code> ではなく <strong><code class="inline">RegistService</code> という型</strong>で受け取れるようになりました。</p>
+  <div class="note do">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--success)"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.4 3 3 6-6.4" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>名前が消えた</div>
+    <p>Controller のコードから <code class="inline">Impl</code> という文字が消えます。<strong>名指しをやめた</strong>ということです。</p>
+  </div>
+</section>
+
+<!-- 29 DIする -->
+<section class="slide" data-title="② DIで中身を入れてもらう">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>② 　<span class="cmdname">DI</span> で中身を入れてもらう</h2>
+  <p>型はインタフェースのまま。<strong>実物は Spring が入れてくれます。</strong></p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Java</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">@Controller</span>
+<span class="c-cmd">@RequiredArgsConstructor</span>
+<span class="c-cmd">public class</span> ReviewController {
+
+    <span class="c-com">// 型はインタフェース。new はどこにも無い</span>
+    <span class="c-cmd">private final</span> RegistService service;
+
+}</code></pre>
+  </div>
+  <p>Controller は「<code class="inline">RegistService</code> ができる人をひとり貸してください」と言っているだけ。<strong>誰が来るかは知りません。</strong></p>
+</section>
+
+<!-- 30 DIコンテナ -->
+<section class="slide" data-title="誰が来るかを決めているもの">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>では、誰が来るのか</h2>
+  <p><code class="inline">@Service</code> が付いたクラスが Bean として DIコンテナに入り、そこから渡されます。</p>
+  <div class="flow vert">
+    <span class="box layer">ReviewController<small>RegistService 型がほしい</small></span>
+    <span class="arrow">↓</span>
+    <span class="lbl">DIコンテナが探して、入れる</span>
+    <span class="arrow">↓</span>
+    <span class="box layer">RegistServiceImpl<small>@Service が付いていて、RegistService を実装している</small></span>
+  </div>
+  <p><strong>「どれを使うか」の判断が、Controller の外に出ました。</strong>ここがポイントです。</p>
+</section>
+
+<!-- 31 疎結合の完成図 -->
+<section class="slide" data-title="疎結合">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>これが「疎結合」の状態</h2>
+  <div class="flow vert">
+    <span class="box layer">ReviewController</span>
+    <span class="arrow">↓</span>
+    <span class="box">interface RegistService</span>
+    <span class="arrow">↓</span>
+    <span class="box layer">RegistServiceImpl</span>
+    <span class="arrow">↓</span>
+    <span class="box">interface RegistRepository</span>
+    <span class="arrow">↓</span>
+    <span class="box layer">RegistRepositoryImpl</span>
+  </div>
+  <p>各層が意識するのは<strong>となりのインタフェースだけ</strong>。Controller の中に <code class="inline">RegistServiceImpl</code> は登場せず、Service の中に <code class="inline">RegistRepositoryImpl</code> は登場しません。</p>
+</section>
+
+<!-- 32 実演 いまの Repository -->
+<section class="slide" data-title="実演 いまの Repository">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>ここまでが、自分のプロジェクトで<br>すでに起きていること</h2>
+  <p>思い出してください。<code class="inline">RegistRepositoryImpl</code> は、まだ<strong>データベースに保存していません。</strong></p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Java</span></div>
+<pre><code><span class="c-cmd">@Repository</span>
+<span class="c-cmd">public class</span> RegistRepositoryImpl <span class="c-cmd">implements</span> RegistRepository {
+    <span class="c-cmd">@Override</span>
+    <span class="c-cmd">public void</span> add(Review review) {
+        System.out.println(<span class="c-str">"---登録---"</span>);   <span class="c-com">// 画面に出しているだけ</span>
+        System.out.println(review);
+    }
+}</code></pre>
+  </div>
+  <p><strong>データベースがまだ無いのに、画面も業務処理も完成しています。</strong>これができているのは、疎結合だからです。</p>
+</section>
+
+<!-- 33 実演 次回変わるのはここだけ -->
+<section class="slide" data-title="実演 次回変わるのはここだけ">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>次回、データベースに繋ぐとき</h2>
+  <p class="lead">書き換えるのは、この1クラスの中身だけです。</p>
+  <div class="flow vert">
+    <span class="box layer">ReviewController<small>変更 0行</small></span>
+    <span class="arrow">↓</span>
+    <span class="box layer">RegistServiceImpl<small>変更 0行</small></span>
+    <span class="arrow">↓</span>
+    <span class="box layer">RegistRepositoryImpl<small>ここだけ書き換える</small></span>
+  </div>
+  <div class="note do">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--success)"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.4 3 3 6-6.4" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>これが疎結合の見返り</div>
+    <p><code class="inline">RegistRepository</code> という約束が変わらない限り、上の層は<strong>何が起きたかも知りません。</strong>次回、実際にこれをやります。</p>
+  </div>
+</section>
+
+<!-- 34 利点 -->
+<section class="slide" data-title="レイヤ構成の利点">
+  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
+  <h2>レイヤ構成の利点</h2>
+  <p>ここまでの話を整理すると、うれしいことは大きく2つです。</p>
+  <table>
+    <tr><th style="width:36%">① 依存関係が明確</th><td><b>開発効率</b>　決まった置き場所があるので、迷わず書ける<br><b>保守性</b>　どこに何があるか分かるので、読める</td></tr>
+    <tr><th>② 独立性が高い</th><td><b>開発効率</b>　となりの層とのインタフェースだけ見ればよい<br><b>品質</b>　直した影響が他の層に飛ばない<br><b>柔軟性</b>　部品を取り替えられる。使い回せる<br><b>保守性</b>　層ごとに切り分けて確認できる</td></tr>
+  </table>
+  <p>①は<strong>層に分けた</strong>ことの効果。②は<strong>インタフェースと DI で疎結合にした</strong>ことの効果です。</p>
+</section>
+
+<!-- 35 MVCモデルと3層 -->
+<section class="slide" data-title="MVCモデルと3層の対応">
+  <div class="eyebrow"><span class="part">Part 06</span><span class="bar"></span></div>
+  <h2>設計モデルの <span class="cmdname">MVC</span> と、3層の対応</h2>
+  <p>MVC という言葉は聞いたことがあると思います。3層に重ねるとこうなります。</p>
+  <table>
+    <tr><th style="width:26%">MVC</th><th>3層でいうと</th></tr>
+    <tr><td><b>M</b>　Model</td><td><strong>サービス層 ＋ インフラ層</strong>（業務処理とデータアクセス）</td></tr>
+    <tr><td><b>V</b>　View</td><td>プレゼン層の View（Thymeleaf のテンプレート）</td></tr>
+    <tr><td><b>C</b>　Controller</td><td>プレゼン層のコントローラ</td></tr>
+  </table>
+  <p><strong>M の範囲が広い</strong>のが分かりますか。3層構成は、この広すぎる M を<strong>業務処理とデータアクセスに割った</strong>ものだと考えてください。アプリの主役であるサービス層を独立させたかったのです。</p>
+</section>
+
+<!-- 36 Spring MVC の M -->
+<section class="slide" data-title="Spring MVC の M は別物">
+  <div class="eyebrow"><span class="part">Part 06</span><span class="bar"></span></div>
+  <h2>ただし <span class="cmdname">Spring MVC</span> の <span class="cmdname">M</span> は別物</h2>
+  <p class="lead">同じ「M」でも、指しているものが違います。</p>
+  <table>
+    <tr><th style="width:34%">どちらの M か</th><th>指しているもの</th></tr>
+    <tr><td>設計モデルの MVC</td><td>業務処理とデータアクセスの<strong>部品</strong></td></tr>
+    <tr><td>Spring MVC</td><td>Controller と View のあいだの<strong>データの受け渡し場所</strong></td></tr>
+  </table>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>混乱しやすいところ</div>
+    <p><code class="inline">model.addAttribute(...)</code> の <code class="inline">Model</code> は<strong>プログラム部品ではありません。</strong>渡したい値を置いておく場所です。<strong>Spring MVC は、プレゼン層の中だけの話</strong>だと覚えてください。</p>
+  </div>
+</section>
+
+<!-- 37 やってみよう1 -->
+<section class="slide" data-title="やってみよう 1">
+  <div class="eyebrow"><span class="part">Practice</span><span class="bar"></span></div>
+  <div class="try">
+    <div class="try-t">やってみよう 1</div>
+    <p>次のものは、それぞれどの層でしょうか。</p>
+    <ol>
+      <li><code class="inline">ReviewController.java</code></li>
+      <li><code class="inline">RegistServiceImpl.java</code></li>
+      <li><code class="inline">RegistRepositoryImpl.java</code></li>
+      <li><code class="inline">regist-review.html</code></li>
+      <li><code class="inline">Review.java</code></li>
+    </ol>
+    <details>
+      <summary><svg class="plus" width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>答えを見る</summary>
+      <ol>
+        <li>プレゼン層（コントローラ）</li>
+        <li>サービス層</li>
+        <li>インフラ層</li>
+        <li>プレゼン層（View）</li>
+        <li><strong>どの層でもない。</strong>層をまたいで運ばれるデータの入れ物</li>
+      </ol>
+      <p>5番が答えられたら、今日の前半は理解できています。</p>
+    </details>
+  </div>
+</section>
+
+<!-- 38 やってみよう2 -->
+<section class="slide" data-title="やってみよう 2">
+  <div class="eyebrow"><span class="part">Practice</span><span class="bar"></span></div>
+  <div class="try">
+    <div class="try-t">やってみよう 2</div>
+    <p>次のコードは、どこがNGでしょうか。</p>
+    <div class="code">
+      <div class="code-head"><span class="code-lang">Java</span></div>
+<pre><code><span class="c-cmd">@Controller</span>
+<span class="c-cmd">@RequiredArgsConstructor</span>
+<span class="c-cmd">public class</span> ReviewController {
+
+    <span class="c-cmd">private final</span> RegistService service;
+    <span class="c-cmd">private final</span> RegistRepository repository;
+
+    <span class="c-cmd">@PostMapping</span>(<span class="c-str">"/confirm-regist-review"</span>)
+    <span class="c-cmd">public</span> String confirm(...) {
+        repository.add(r);
+        <span class="c-cmd">return</span> <span class="c-str">"complete-regist-review"</span>;
+    }
+}</code></pre>
+    </div>
+    <details>
+      <summary><svg class="plus" width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>答えを見る</summary>
+      <p class="big" style="color:var(--accent-dark)">層飛ばし</p>
+      <p>プレゼン層が、サービス層を通さずに<strong>インフラ層を直接呼んでいます。</strong>コンパイルは通り、動きもします。だからこそ気づきにくい。<br>
+      <strong>直し方：</strong><code class="inline">RegistRepository</code> のフィールドを消し、<code class="inline">service.regist(r)</code> を呼ぶ。保存の呼び出しはサービス層の仕事です。</p>
+    </details>
+  </div>
+</section>
+
+<!-- 39 やってみよう3 -->
+<section class="slide" data-title="やってみよう 3">
+  <div class="eyebrow"><span class="part">Practice</span><span class="bar"></span></div>
+  <div class="try">
+    <div class="try-t">やってみよう 3</div>
+    <p>業務処理を、いまの <code class="inline">RegistServiceImpl</code> から<strong>別の実装に取り替えたい</strong>とします。<code class="inline">RegistService</code> インタフェースは変えません。</p>
+    <p class="big">さわるファイルは、何個？</p>
+    <details>
+      <summary><svg class="plus" width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>答えを見る</summary>
+      <p><strong>サービス層の2ファイルだけ。</strong></p>
+      <ol>
+        <li>新しい実装クラスを作る（<code class="inline">implements RegistService</code>）</li>
+        <li><code class="inline">@Service</code> を新しいほうに移す</li>
+      </ol>
+      <p><code class="inline">ReviewController</code> は <strong>0行</strong>。<code class="inline">RegistService</code> も <strong>0行</strong>。リポジトリ側も <strong>0行</strong>。<br>
+      密結合だったら、<code class="inline">ReviewController</code> も直すことになっていました。<strong>この差が疎結合の値打ちです。</strong></p>
+    </details>
+  </div>
+</section>
+
+<!-- 40 まとめ -->
+<section class="slide" data-title="まとめ">
+  <div class="eyebrow"><span class="part">Summary</span><span class="bar"></span></div>
+  <h2>まとめ</h2>
+  <ol class="steps">
+    <li><b>部品を役割で3つの層に分ける</b>プレゼン層（やり取り）／サービス層（業務処理）／インフラ層（データアクセス）。</li>
+    <li><b>呼ぶのは上から下へ、1段ずつ</b>逆流も層飛ばしもNG。</li>
+    <li><b>層のあいだにインタフェースを挟み、<span class="latin">DI</span> で入れてもらう</b>上の層が下の層を名指ししない。これが疎結合。</li>
+    <li><b>疎結合だと、取り替えても影響が飛ばない</b>次回データベースに繋ぐとき、書き換えるのは <code class="inline">RegistRepositoryImpl</code> の中身だけ。</li>
+    <li><b>Spring MVC の <span class="latin">M</span> は、設計モデルの <span class="latin">M</span> とは別物</b>Spring MVC はプレゼン層の中だけの話。</li>
+  </ol>
+</section>
+
+<!-- 41 締め -->
+<section class="slide" data-title="詰まったとき / 次に読む">
+  <div class="eyebrow"><span class="part">Next</span><span class="bar"></span></div>
+  <h2>詰まったら</h2>
+  <div class="note stuck">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--error)"><circle cx="12" cy="12" r="10"/><path d="M12 6.6v7M12 16v1.4" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>エラーが出て動かないとき</div>
+    <p>ひとりで20分粘る前に、<a href="../cs/how-to-get-unstuck.html">詰まったときの動き方</a>を開いてください。エラーの読み方、検索の仕方、ChatGPT への聞き方が書いてあります。</p>
+  </div>
+  <h3>次に読む</h3>
+  <div class="next">
+    <div class="soon">
+      <span><span class="lbl">Java 次回</span><span class="ttl">データベースアクセス</span></span>
+      <span style="font-size:13px">準備中</span>
+    </div>
+    <a href="../index.html">
+      <span><span class="lbl">Index</span><span class="ttl">スライド一覧にもどる</span></span>
+      <span aria-hidden="true">→</span>
+    </a>
+  </div>
+  <p style="margin-top:18px;font-size:13.5px;color:var(--text-sub)">最終更新　<span class="latin">2026-09-12</span></p>
+</section>
 </div>
+
+<nav class="nav">
+  <span class="title" id="navTitle"></span>
+  <span class="ctrl">
+    <button id="prev" type="button" aria-label="前のスライド">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg>
+    </button>
+    <span class="counter"><b id="cur">1</b> / <span id="total">1</span></span>
+    <button id="next" type="button" aria-label="次のスライド">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+    </button>
+  </span>
+</nav>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var elCur = document.getElementById('cur');
+  var elTotal = document.getElementById('total');
+  var elBar = document.getElementById('bar');
+  var elTitle = document.getElementById('navTitle');
+  var btnPrev = document.getElementById('prev');
+  var btnNext = document.getElementById('next');
+  elTotal.textContent = slides.length;
+
+  function show(n, push){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function(s, k){ s.classList.toggle('on', k === i); });
+    elCur.textContent = i + 1;
+    elBar.style.width = ((i + 1) / slides.length * 100) + '%';
+    elTitle.textContent = slides[i].dataset.title || '';
+    btnPrev.disabled = (i === 0);
+    btnNext.disabled = (i === slides.length - 1);
+    slides[i].scrollTop = 0;
+    if (push !== false) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  function fromHash(){
+    var n = parseInt((location.hash || '').replace('#',''), 10);
+    show(isNaN(n) ? 0 : n - 1, false);
+  }
+
+  btnPrev.addEventListener('click', function(){ show(i - 1); });
+  btnNext.addEventListener('click', function(){ show(i + 1); });
+  window.addEventListener('hashchange', fromHash);
+
+  document.addEventListener('keydown', function(e){
+    if (e.target.tagName === 'SUMMARY' && (e.key === ' ' || e.key === 'Enter')) return;
+    switch(e.key){
+      case 'ArrowRight': case 'PageDown': show(i + 1); break;
+      case 'ArrowLeft':  case 'PageUp':   show(i - 1); break;
+      case ' ':          show(e.shiftKey ? i - 1 : i + 1); e.preventDefault(); break;
+      case 'Home':       show(0); break;
+      case 'End':        show(slides.length - 1); break;
+      default: return;
+    }
+  });
+
+  // スマホのスワイプ
+  var x0 = null;
+  document.addEventListener('touchstart', function(e){ x0 = e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 60) show(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  }, {passive:true});
+
+  // コードのコピー
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var code = btn.closest('.code').querySelector('pre code').innerText;
+      navigator.clipboard.writeText(code).then(function(){
+        btn.textContent = 'コピーしました';
+        btn.classList.add('done');
+        setTimeout(function(){ btn.textContent = 'コピー'; btn.classList.remove('done'); }, 1600);
+      });
+    });
+  });
+
+  // 印刷時は演習の答えを開いた状態にする
+  var reopen = [];
+  window.addEventListener('beforeprint', function(){
+    reopen = [];
+    document.querySelectorAll('details:not([open])').forEach(function(d){
+      reopen.push(d); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function(){
+    reopen.forEach(function(d){ d.open = false; });
+    reopen = [];
+  });
+
+  fromHash();
+})();
+</script>
 </body>
 </html>
