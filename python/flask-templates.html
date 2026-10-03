@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>はじめての Web アプリ | explaindoc</title>
+<title>画面（HTML）テンプレート | explaindoc</title>
 <style>
 @font-face{
   font-family:'Fraunces';font-style:normal;font-weight:300 700;font-display:swap;
@@ -198,11 +198,11 @@ a:hover{color:var(--accent)}
 <!-- 1 表紙 -->
 <section class="slide cover" data-title="表紙">
   <div class="eyebrow" style="justify-content:center"><span class="part">Python</span></div>
-  <h1>はじめての Web アプリ</h1>
-  <p class="sub">ブラウザで開けるものを、自分の手でつくる</p>
+  <h1>画面（<span class="latin">HTML</span>）テンプレート</h1>
+  <p class="sub">見た目は <span class="latin">HTML</span> のファイルに、中身は <span class="latin">Python</span> に。2つに分ける</p>
   <div class="meta">
     <span class="chip">対象 <b>高校生</b></span>
-    <span class="chip">前提 <b>変数・関数・f文字列</b></span>
+    <span class="chip">前提 <b>前回の <span class="latin">Flask</span></b></span>
     <span class="chip">所要 <b><span class="latin">90</span>分</b></span>
     <span class="chip">最終更新 <b class="latin">2026-10-03</b></span>
   </div>
@@ -215,13 +215,13 @@ a:hover{color:var(--accent)}
   <h2>この回のゴール</h2>
   <p class="lead">終わったとき、この3つができていれば合格です。</p>
   <ol class="steps">
-    <li><b>自分のPCでWebサーバーを起動して、ブラウザで開ける</b>アドレスバーに <code class="inline">127.0.0.1:5000</code> と打って、自分の書いた文字が出る。</li>
-    <li><b>URL を増やせる</b><code class="inline">/guri</code> を開いたら別の文字が出るようにする。</li>
-    <li><b>URL の一部を受け取れる</b><code class="inline">/taro</code> でも <code class="inline">/hanako</code> でも、打った名前が画面に出る。</li>
+    <li><b><span class="latin">HTML</span> のファイルを、ブラウザに出せる</b><code class="inline">templates/index.html</code> を作って、<code class="inline">render_template</code> で返す。</li>
+    <li><b><span class="latin">Python</span> の値を <span class="latin">HTML</span> に渡せる</b><code class="inline">/taro</code> を開いたら、<span class="latin">HTML</span> の中の <code class="inline">{{ name }}</code> が <strong>taro</strong> に変わる。</li>
+    <li><b>リストを並べて表示できる</b><code class="inline">{% for %}</code> で、<span class="latin">Python</span> のリストを箇条書きにする。</li>
   </ol>
-  <div class="note">
-    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>書くコードは全部で <span class="latin">20</span> 行ほど</div>
-    <p>量は多くありません。<strong>「なぜ動くのか」に時間を使います。</strong></p>
+  <div class="note do">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--success)"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.4 3 3 6-6.4" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>各章の終わりに「確認」のスライドがあります</div>
+    <p>そこに<strong>「こうなっていれば正しい」</strong>と書いてあります。<strong>必ず止まって見比べてから</strong>、次へ進んでください。ずれたまま進むと、原因が分からなくなります。</p>
   </div>
 </section>
 
@@ -230,492 +230,27 @@ a:hover{color:var(--accent)}
   <div class="eyebrow"><span class="part">Contents</span><span class="bar"></span></div>
   <h2>もくじ</h2>
   <table>
-    <tr><th style="width:78px"><span class="latin">01</span></th><td><b>Webアプリとは何か</b><br><span style="color:var(--text-sub);font-size:14.5px">ブラウザとサーバーは、何をやり取りしているのか</span></td></tr>
-    <tr><th><span class="latin">02</span></th><td><b>準備</b><br><span style="color:var(--text-sub);font-size:14.5px">仮想環境をつくって、Flask を入れて、起動する</span></td></tr>
-    <tr><th><span class="latin">03</span></th><td><b>Hello, World</b><br><span style="color:var(--text-sub);font-size:14.5px">7行書いて、ブラウザに出す</span></td></tr>
-    <tr><th><span class="latin">04</span></th><td><b>ルーティング</b><br><span style="color:var(--text-sub);font-size:14.5px">URL を増やす</span></td></tr>
-    <tr><th><span class="latin">05</span></th><td><b>ルーティング変数</b><br><span style="color:var(--text-sub);font-size:14.5px">URL の一部を受け取る</span></td></tr>
+    <tr><th style="width:78px"><span class="latin">00</span></th><td><b>前回の続きから</b><br><span style="color:var(--text-sub);font-size:14.5px">前回つくったものを、もう一度動かす</span></td></tr>
+    <tr><th><span class="latin">01</span></th><td><b>なぜ <span class="latin">HTML</span> を分けるのか</b><br><span style="color:var(--text-sub);font-size:14.5px"><code>return</code> に書き続けると、どうなるか</span></td></tr>
+    <tr><th><span class="latin">02</span></th><td><b><span class="latin">HTML</span> の最低限</b><br><span style="color:var(--text-sub);font-size:14.5px">今日使うタグは3つだけ</span></td></tr>
+    <tr><th><span class="latin">03</span></th><td><b><span class="latin">templates</span> に置いて返す</b><br><span style="color:var(--text-sub);font-size:14.5px">置き場所は決まっている</span></td></tr>
+    <tr><th><span class="latin">04</span></th><td><b>値を渡す</b><br><span style="color:var(--text-sub);font-size:14.5px"><code>{{ name }}</code> に <span class="latin">Python</span> の値が入る</span></td></tr>
+    <tr><th><span class="latin">05</span></th><td><b><span class="latin">for</span> と <span class="latin">if</span></b><br><span style="color:var(--text-sub);font-size:14.5px"><span class="latin">HTML</span> の中で繰り返す、場合分けする</span></td></tr>
   </table>
 </section>
 
-<!-- 4 Part1 扉 -->
-<section class="slide cover" data-title="01 Webアプリとは何か">
-  <div class="eyebrow" style="justify-content:center"><span class="part">Part 01</span></div>
-  <h1>Webアプリとは何か</h1>
-  <p class="sub">コードを書く前に、絵を頭に入れる</p>
+<!-- 4 Part00 扉 -->
+<section class="slide cover" data-title="00 前回の続きから">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 00</span></div>
+  <h1>前回の続きから</h1>
+  <p class="sub">まず、前回のものが動くところまで戻す</p>
 </section>
 
-<!-- 5 Webアプリって何 -->
-<section class="slide" data-title="Webアプリって何のこと">
-  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
-  <h2>Webアプリって、何のこと？</h2>
-  <p class="lead">ブラウザで開いて使うもの、と考えてください。</p>
-  <p>インストールせずに、URL を開くだけで使えるもの。たとえば、</p>
-  <ul>
-    <li>Google 検索</li>
-    <li>YouTube</li>
-    <li>Google Classroom</li>
-  </ul>
-  <p>どれも<strong>アプリを入れていないのに使えます</strong>。ブラウザさえあればいい。<br>
-  今日つくるのは、この仲間のいちばん小さいものです。</p>
-</section>
-
-<!-- 7 ブラウザとサーバー -->
-<section class="slide" data-title="ブラウザとサーバー">
-  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
-  <h2>登場人物は2人だけ</h2>
-  <div class="flow">
-    <span class="box plain">ブラウザ</span>
-    <span class="arrow">⇄</span>
-    <span class="box plain">サーバー</span>
-  </div>
-  <table>
-    <tr><td style="width:32%"><b>ブラウザ</b></td><td>Chrome や Edge。<strong>「このURLをください」と頼む側</strong></td></tr>
-    <tr><td><b>サーバー</b></td><td>頼まれたものを<strong>返す側</strong>。今日つくるのはこちら</td></tr>
-  </table>
-  <p>ふだんは遠くにあるサーバーに頼んでいますが、<strong>今日はサーバーも自分のPCの中</strong>にあります。1台の中で、頼む役と返す役の両方をやります。</p>
-</section>
-
-<!-- 8 リクエストとレスポンス -->
-<section class="slide" data-title="リクエストとレスポンス">
-  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
-  <h2>やり取りには名前がついている</h2>
-  <div class="flow vert">
-    <span class="box layer">ブラウザ</span>
-    <span class="arrow">↓</span>
-    <span class="lbl">リクエスト　「<span class="latin">/guri</span> をください」</span>
-    <span class="arrow">↓</span>
-    <span class="box layer">サーバー<small>今日つくるのはここ</small></span>
-    <span class="arrow">↓</span>
-    <span class="lbl">レスポンス　「はい、これです」</span>
-    <span class="arrow">↓</span>
-    <span class="box layer">ブラウザ<small>受け取って画面に表示する</small></span>
-  </div>
-  <p><strong>行きがリクエスト、帰りがレスポンス。</strong>上から下へ、時間の順に並べてあります。上と下のブラウザは同じものです。この2語は今後ずっと出てきます。</p>
-</section>
-
-<!-- 9 URLの分解 -->
-<section class="slide" data-title="URL を分解する">
-  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
-  <h2><span class="cmdname">URL</span> を分解してみる</h2>
-  <p>今日ブラウザに打ち込むのは、このアドレスです。</p>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">URL</span></div>
-<pre><code>http://127.0.0.1:5000/guri</code></pre>
-  </div>
-  <table>
-    <tr><td style="width:30%"><code>127.0.0.1</code></td><td><strong>自分のPC</strong>を指す決まった番号。「ここ」という意味</td></tr>
-    <tr><td><code>:5000</code></td><td><strong>ポート番号。</strong>1台の中の何番窓口か。Flask は既定で 5000 番</td></tr>
-    <tr><td><code>/guri</code></td><td><strong>パス。</strong>どれをください、という指定。<strong>今日いじるのはここ</strong></td></tr>
-  </table>
-  <p><code class="inline">localhost</code> と書いても <code class="inline">127.0.0.1</code> と同じです。</p>
-</section>
-
-<!-- 10 サーバーは待っている -->
-<section class="slide" data-title="サーバーは待ち続ける">
-  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
-  <h2>サーバーは、終わらないプログラム</h2>
-  <p class="lead">起動すると、<strong>止めるまで動きっぱなし</strong>になります。</p>
-  <p>Colab のセルは、実行したら終わりました。サーバーは違います。<strong>リクエストが来るのをずっと待っています。</strong></p>
-  <div class="note warn">
-    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>だからターミナルが戻ってこない</div>
-    <p>起動するとターミナルが入力を受け付けなくなります。<strong>フリーズではありません。</strong>待っているだけです。別のコマンドを打ちたいときは、いったん止めます。</p>
-  </div>
-</section>
-
-<!-- 11 今日つくるもの -->
-<section class="slide" data-title="今日つくるもの">
-  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
-  <h2>今日つくるもの</h2>
-  <p>3段階で育てます。<strong>どの段階でも必ず動きます。</strong></p>
-  <ol class="steps">
-    <li><b><span class="latin">/</span> を開くと Hello, World! と出る</b>いちばん小さいWebアプリ。7行。</li>
-    <li><b><span class="latin">/guri</span> と <span class="latin">/gura</span> を足す</b>URL ごとに違う文字を返す。</li>
-    <li><b><span class="latin">/</span> のあとに打った名前を、そのまま返す</b><code class="inline">/taro</code> なら Hello, taro!</li>
-  </ol>
-</section>
-
-<!-- 12 Part2 扉 -->
-<section class="slide cover" data-title="02 準備">
-  <div class="eyebrow" style="justify-content:center"><span class="part">Part 02</span></div>
-  <h1>準備</h1>
-  <p class="sub">仮想環境をつくって、<span class="latin">Flask</span> を入れて、起動する</p>
-</section>
-
-<!-- 13 全体像 -->
-<section class="slide" data-title="準備の全体像">
-  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
-  <h2>やることは5つ</h2>
-  <p>VS Code でこのディレクトリを開いた状態から始めます。ターミナルは <strong>PowerShell</strong> です。</p>
-  <ol class="steps">
-    <li><b>仮想環境をつくる</b>このアプリ専用の、道具置き場をつくる</li>
-    <li><b>仮想環境を有効にする</b>道具置き場を使う状態に切り替える</li>
-    <li><b><span class="latin">Flask</span> を入れる</b>Webサーバーをつくるための道具</li>
-    <li><b>起動する</b>サーバーが待ち始める</li>
-    <li><b>ブラウザで開く</b></li>
-  </ol>
-  <p>①〜③は<strong>最初の1回だけ</strong>。次回からは②④だけです。</p>
-</section>
-
-<!-- 14 仮想環境をつくる -->
-<section class="slide" data-title="① 仮想環境をつくる">
-  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
-  <h2>① 　仮想環境をつくる</h2>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">PowerShell</span><button class="copy" type="button">コピー</button></div>
-<pre><code><span class="c-cmd">py</span> <span class="c-opt">-m</span> venv venv</code></pre>
-    <div class="out"><b>結果</b>venv というディレクトリができる（少し時間がかかる）</div>
-  </div>
-  <p><strong>「仮想環境」は、このアプリ専用の道具置き場</strong>だと思ってください。<br>
-  PC全体に Flask を入れるのではなく、このディレクトリの中だけに入れます。<strong>別のアプリを作るときに、道具がぶつからない</strong>ようにするためです。</p>
-  <div class="note">
-    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>venv が2回出てくる</div>
-    <p>前が<strong>命令の名前</strong>、後ろが<strong>つくるディレクトリの名前</strong>です。後ろは別の名前でも構いませんが、<code class="inline">venv</code> が慣習です。</p>
-  </div>
-</section>
-
-<!-- 15 有効化 -->
-<section class="slide" data-title="② 仮想環境を有効にする">
-  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
-  <h2>② 　仮想環境を有効にする</h2>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">PowerShell</span><button class="copy" type="button">コピー</button></div>
-<pre><code>venv\Scripts\Activate.ps1</code></pre>
-    <div class="out"><b>結果</b>(venv) PS C:\Users\...&gt;  ← 行の先頭に (venv) が付く</div>
-  </div>
-  <p><strong>先頭の <code class="inline">(venv)</code> が目印です。</strong>これが出ていないときは有効になっていません。</p>
-  <div class="note warn">
-    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>「スクリプトの実行が無効になっている」と出たら</div>
-    <p>Windows の初期設定でよく起きます。<strong>1回やれば二度と出ません。</strong>次を打ってから、もう一度上のコマンドを打ってください。</p>
-  </div>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">PowerShell</span><button class="copy" type="button">コピー</button></div>
-<pre><code><span class="c-cmd">Set-ExecutionPolicy</span> RemoteSigned <span class="c-opt">-Scope</span> CurrentUser</code></pre>
-  </div>
-</section>
-
-<!-- 16 Flask を入れる -->
-<section class="slide" data-title="③ Flask を入れる">
-  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
-  <h2>③ 　<span class="cmdname">Flask</span> を入れる</h2>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">PowerShell</span><button class="copy" type="button">コピー</button></div>
-<pre><code><span class="c-cmd">pip</span> install Flask</code></pre>
-    <div class="out"><b>結果</b>Successfully installed Flask-3.x.x ...</div>
-  </div>
-  <p><strong>Flask は「Webサーバーをつくるための道具」</strong>です。これを使うと、20行ほどでサーバーが書けます。自分でゼロから書くと数百行かかります。</p>
-  <div class="note warn">
-    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>(venv) が付いているか確認してから</div>
-    <p>付いていない状態で入れると、<strong>PC全体のほうに入ってしまいます。</strong>動きはしますが、この先で混乱します。</p>
-  </div>
-</section>
-
-<!-- 17 起動する -->
-<section class="slide" data-title="④ 起動する">
-  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
-  <h2>④ 　起動する</h2>
-  <p><code class="inline">app.py</code> を書いたあとに打つコマンドです。<strong>先に見ておきましょう。</strong></p>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">PowerShell</span><button class="copy" type="button">コピー</button></div>
-<pre><code><span class="c-cmd">python</span> app.py</code></pre>
-    <div class="out"><b>結果</b> * Running on http://127.0.0.1:5000
-Press CTRL+C to quit</div>
-  </div>
-  <p>この <code class="inline">http://127.0.0.1:5000</code> を<strong>ブラウザのアドレスバーに打ち込みます。</strong>ターミナルの URL は <kbd>Ctrl</kbd> を押しながらクリックしても開けます。</p>
-  <div class="note">
-    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>もうひとつの起動方法</div>
-    <p>ネットの記事では <code class="inline">flask --app app run --debug</code> という書き方をよく見ます。同じものが起動します。<strong>古い記事の <code class="inline">FLASK_ENV=development</code> は、いまの Flask では効きません。</strong></p>
-  </div>
-</section>
-
-<!-- 18 止め方 -->
-<section class="slide" data-title="⑤ 止め方と、直したあと">
-  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
-  <h2>⑤ 　止め方と、コードを直したあと</h2>
-  <table>
-    <tr><td style="width:38%"><b>サーバーを止める</b></td><td>ターミナルで <kbd>Ctrl</kbd> + <kbd>C</kbd></td></tr>
-    <tr><td><b>コードを直したあと</b></td><td><strong>止めて、もう一度 <code>python app.py</code></strong></td></tr>
-    <tr><td><b>仮想環境を抜ける</b></td><td><code>deactivate</code></td></tr>
-  </table>
-  <p class="lead">今日いちばんよくやるミスは、<strong>直したのに再起動していない</strong>です。</p>
-  <div class="note do">
-    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--success)"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.4 3 3 6-6.4" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>再起動が面倒になったら</div>
-    <p>最後の行を <code class="inline">app.run(debug=True)</code> に変えると、<strong>保存するたび自動で読み直して</strong>くれます。今日は素の <code class="inline">app.run()</code> のまま進めます。</p>
-  </div>
-</section>
-
-<!-- 19 Part3 扉 -->
-<section class="slide cover" data-title="03 Hello, World">
-  <div class="eyebrow" style="justify-content:center"><span class="part">Part 03</span></div>
-  <h1>Hello, World</h1>
-  <p class="sub">7行書いて、ブラウザに出す</p>
-</section>
-
-<!-- 20 app.py を書く -->
-<section class="slide" data-title="app.py を書く">
-  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
-  <h2><span class="cmdname">app.py</span> を作って、そのまま写す</h2>
-  <p>VS Code で <code class="inline">app.py</code> という名前のファイルを作り、これを打ちます。</p>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">Python</span><button class="copy" type="button">コピー</button></div>
-<pre><code><span class="c-cmd">from</span> flask <span class="c-cmd">import</span> Flask
-
-app = Flask(__name__)
-
-<span class="c-cmd">@app.route</span>(<span class="c-str">"/"</span>)
-<span class="c-cmd">def</span> hello_world():
-    <span class="c-cmd">return</span> <span class="c-str">"&lt;p&gt;Hello, World!&lt;/p&gt;"</span>
-
-<span class="c-cmd">if</span> __name__ == <span class="c-str">"__main__"</span>:
-    app.run()</code></pre>
-  </div>
-  <p>保存して <code class="inline">python app.py</code>。ブラウザで <code class="inline">127.0.0.1:5000</code> を開いてください。<strong>まず動かしてから、中身を読みます。</strong></p>
-</section>
-
-<!-- 21 1〜3行目 -->
-<section class="slide" data-title="1〜3行目">
-  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
-  <h2>上の <span class="latin">3</span> 行　—　道具を出して、本体をつくる</h2>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">Python</span></div>
-<pre><code><span class="c-cmd">from</span> flask <span class="c-cmd">import</span> Flask
-
-app = Flask(__name__)</code></pre>
-  </div>
-  <table>
-    <tr><td style="width:44%"><code>from flask import Flask</code></td><td>Flask という道具を<strong>使えるようにする</strong></td></tr>
-    <tr><td><code>app = Flask(__name__)</code></td><td><strong>Webアプリの本体をつくって</strong>、<code>app</code> という名前で持っておく</td></tr>
-  </table>
-  <p><code class="inline">__name__</code> は「このファイルの名前」が入っている変数です。<strong>Flask がファイルの置き場所を知るために使います。</strong>いまは、そう書くものだと思ってください。</p>
-</section>
-
-<!-- 22 5〜7行目 荷札 -->
-<section class="slide" data-title="5〜7行目">
-  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
-  <h2>まん中の <span class="latin">3</span> 行　—　ここが本題</h2>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">Python</span></div>
-<pre><code><span class="c-cmd">@app.route</span>(<span class="c-str">"/"</span>)
-<span class="c-cmd">def</span> hello_world():
-    <span class="c-cmd">return</span> <span class="c-str">"&lt;p&gt;Hello, World!&lt;/p&gt;"</span></code></pre>
-  </div>
-  <p class="lead"><strong><code class="inline">@app.route("/")</code> は、関数に貼る荷札です。</strong></p>
-  <p>「この関数は <code class="inline">/</code> を開いたときに呼んでください」と書いた荷札を、<strong>すぐ下の関数に貼っている</strong>と考えてください。<br>
-  ブラウザから <code class="inline">/</code> のリクエストが来ると、Flask が荷札を見て <code class="inline">hello_world()</code> を呼び、<strong><code class="inline">return</code> した文字列がそのままレスポンス</strong>になります。</p>
-</section>
-
-<!-- 23 @の正体 -->
-<section class="slide" data-title="@ の正体">
-  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
-  <h2>この <span class="cmdname">@</span> は何なのか</h2>
-  <p>関数の上に <code class="inline">@</code> で始まる行を書くのは、<strong>デコレータ</strong>という書き方です。</p>
-  <div class="note">
-    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>今日は名前だけ覚えれば十分</div>
-    <p>仕組みは Python の少し先の話なので、この回では踏み込みません。<strong>いまは「関数に荷札を貼るもの」</strong>で通します。<br>
-    ただし<strong>名前は覚えておいてください。</strong>「デコレータ」で検索できるかどうかが、あとで効いてきます。</p>
-  </div>
-  <p>大事なのは <strong>順番</strong>です。荷札は<strong>関数のすぐ上</strong>に書きます。間に空行があっても構いませんが、<strong>別の行を挟むと貼り先が変わります。</strong></p>
-</section>
-
-<!-- 24 動かしてみる -->
-<section class="slide" data-title="動かしてみる">
-  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
-  <h2>下の <span class="latin">2</span> 行と、動かした結果</h2>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">Python</span></div>
-<pre><code><span class="c-cmd">if</span> __name__ == <span class="c-str">"__main__"</span>:
-    app.run()</code></pre>
-  </div>
-  <p><strong><code class="inline">python app.py</code> で直接動かしたときだけ、サーバーを起動する</strong>という意味です。ここも、いまは決まり文句として覚えて構いません。</p>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">PowerShell</span></div>
-<pre><code><span class="c-cmd">python</span> app.py</code></pre>
-    <div class="out"><b>ターミナル</b> * Running on http://127.0.0.1:5000
-Press CTRL+C to quit
-127.0.0.1 - - [13/Sep/2026 10:20:31] "GET / HTTP/1.1" 200 -</div>
-  </div>
-  <p>ブラウザで開くたび、<strong>ターミナルに1行ずつ増えます。</strong>これがリクエストの記録です。<code class="inline">200</code> は「うまくいった」という意味の番号です。</p>
-</section>
-
-<!-- 25 Part4 扉 -->
-<section class="slide cover" data-title="04 ルーティング">
-  <div class="eyebrow" style="justify-content:center"><span class="part">Part 04</span></div>
-  <h1>ルーティング</h1>
-  <p class="sub"><span class="latin">URL</span> と関数を結びつける</p>
-</section>
-
-<!-- 26 URLを増やす -->
-<section class="slide" data-title="URL を増やす">
-  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
-  <h2><span class="latin">URL</span> を増やしてみる</h2>
-  <p>荷札と関数を、もう2組足します。<strong>いまのコードの下に書き足すだけ</strong>です。</p>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">Python</span><button class="copy" type="button">コピー</button></div>
-<pre><code><span class="c-cmd">@app.route</span>(<span class="c-str">"/guri"</span>)
-<span class="c-cmd">def</span> hello_guri():
-    <span class="c-cmd">return</span> <span class="c-str">"&lt;p&gt;Hello, ぐり主任!&lt;/p&gt;"</span>
-
-<span class="c-cmd">@app.route</span>(<span class="c-str">"/gura"</span>)
-<span class="c-cmd">def</span> hello_gura():
-    <span class="c-cmd">return</span> <span class="c-str">"&lt;p&gt;Hello, ぐらさん!&lt;/p&gt;"</span></code></pre>
-  </div>
-  <p>保存して<strong>再起動</strong>。<code class="inline">127.0.0.1:5000/guri</code> を開いてみてください。</p>
-</section>
-
-<!-- 27 対応表 -->
-<section class="slide" data-title="URL と関数の対応">
-  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
-  <h2>これが「ルーティング」</h2>
-  <p><strong>どの <span class="latin">URL</span> が来たら、どの関数を呼ぶか</strong>の対応づけのことです。</p>
-  <table>
-    <tr><th style="width:30%">URL</th><th style="width:34%">呼ばれる関数</th><th>画面に出るもの</th></tr>
-    <tr><td><code>/</code></td><td><code>hello_world()</code></td><td>Hello, World!</td></tr>
-    <tr><td><code>/guri</code></td><td><code>hello_guri()</code></td><td>Hello, ぐり主任!</td></tr>
-    <tr><td><code>/gura</code></td><td><code>hello_gura()</code></td><td>Hello, ぐらさん!</td></tr>
-  </table>
-  <p>URL を1つ増やしたければ、<strong>荷札と関数を1組足す。</strong>それだけです。</p>
-</section>
-
-<!-- 28 関数名 -->
-<section class="slide" data-title="関数の名前について">
-  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
-  <h2>関数の名前は自由。ただし重複はだめ</h2>
-  <p>関数名は <code class="inline">hello_guri</code> でなくても構いません。<strong>URL とそろえる必要もありません。</strong>読んで分かる名前をつけてください。</p>
-  <div class="note warn">
-    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>同じ関数名を2回使うと、起動できません</div>
-    <p>コピーして貼り付けたあと、<strong>関数名を変え忘れる</strong>のがよくあるミスです。ターミナルに <code class="inline">View function mapping is overwriting an existing endpoint function</code> と出たら、これです。</p>
-  </div>
-  <p>Flask は関数名を「その画面の名札」として使っているので、<strong>かぶると区別がつかなくなる</strong>のです。</p>
-</section>
-
-<!-- 29 404 -->
-<section class="slide" data-title="存在しないURL">
-  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
-  <h2>荷札のない <span class="latin">URL</span> を開くと</h2>
-  <p><code class="inline">127.0.0.1:5000/hoge</code> のように、書いていない URL を開いてみてください。</p>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">Browser</span></div>
-<pre><code>Not Found
-
-The requested URL was not found on the server.</code></pre>
-    <div class="out"><b>ターミナル</b>127.0.0.1 - - [13/Sep/2026 10:24:02] "GET /hoge HTTP/1.1" 404 -</div>
-  </div>
-  <p class="lead"><strong><span class="latin">404</span> は「そんな URL は無い」という意味の番号です。</strong></p>
-  <p>ネットでよく見る「404 エラー」はこれです。<strong>プログラムが壊れたのではありません。</strong>荷札が無いだけです。</p>
-</section>
-
-<!-- 30 Part5 扉 -->
-<section class="slide cover" data-title="05 ルーティング変数">
-  <div class="eyebrow" style="justify-content:center"><span class="part">Part 05</span></div>
-  <h1>ルーティング変数</h1>
-  <p class="sub"><span class="latin">URL</span> の一部を、そのまま受け取る</p>
-  <p class="big" style="margin-top:24px">今日の到達点です。</p>
-</section>
-
-<!-- 31 問題提起 -->
-<section class="slide" data-title="100人いたら100個書くのか">
-  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
-  <h2>クラス全員分をつくれと言われたら</h2>
-  <p>いまのやり方だと、こうなります。</p>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">Python</span></div>
-<pre><code><span class="c-cmd">@app.route</span>(<span class="c-str">"/taro"</span>)
-<span class="c-cmd">def</span> hello_taro():
-    <span class="c-cmd">return</span> <span class="c-str">"&lt;p&gt;Hello, taro!&lt;/p&gt;"</span>
-
-<span class="c-cmd">@app.route</span>(<span class="c-str">"/hanako"</span>)
-<span class="c-cmd">def</span> hello_hanako():
-    <span class="c-cmd">return</span> <span class="c-str">"&lt;p&gt;Hello, hanako!&lt;/p&gt;"</span>
-
-<span class="c-com"># …あと38人分…</span></code></pre>
-  </div>
-  <p class="lead"><strong>やってられません。</strong>違うのは名前の部分だけなのに。</p>
-</section>
-
-<!-- 32 <name> -->
-<section class="slide" data-title="URL の一部を変数にする">
-  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
-  <h2><span class="latin">URL</span> の一部を、変数にする</h2>
-  <p>荷札の中で <code class="inline">&lt; &gt;</code> で囲むと、<strong>そこは「何が来てもいい場所」</strong>になります。</p>
-  <div class="flow">
-    <span class="box">/&lt;name&gt;</span>
-    <span class="arrow">→</span>
-    <span class="box plain">/taro でも /hanako でも当たる</span>
-  </div>
-  <p>そして<strong>当たった文字が、関数に渡されます。</strong>URL に打ち込まれた文字を、プログラムの中で使えるということです。</p>
-</section>
-
-<!-- 33 コード -->
-<section class="slide" data-title="書き換える">
-  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
-  <h2>さっきの <span class="latin">2</span> 組を、これに書き換える</h2>
-  <p><code class="inline">/guri</code> と <code class="inline">/gura</code> の6行を消して、これを書きます。</p>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">Python</span><button class="copy" type="button">コピー</button></div>
-<pre><code><span class="c-cmd">@app.route</span>(<span class="c-str">"/&lt;name&gt;"</span>)
-<span class="c-cmd">def</span> hello(name):
-    <span class="c-cmd">return</span> f<span class="c-str">"&lt;p&gt;Hello, { name }!&lt;/p&gt;"</span></code></pre>
-  </div>
-  <p>保存して<strong>再起動</strong>。<code class="inline">127.0.0.1:5000/taro</code> を開いてください。<strong>自分の名前でも試してみましょう。</strong></p>
-</section>
-
-<!-- 34 つながり -->
-<section class="slide" data-title="名前が3か所でつながっている">
-  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
-  <h2><span class="cmdname">name</span> は <span class="latin">3</span> か所でつながっている</h2>
-  <div class="flow vert">
-    <span class="box">@app.route("/&lt;name&gt;")</span>
-    <span class="arrow">↓</span>
-    <span class="lbl">同じ名前で受け取る</span>
-    <span class="arrow">↓</span>
-    <span class="box">def hello(name):</span>
-    <span class="arrow">↓</span>
-    <span class="lbl">中で使う</span>
-    <span class="arrow">↓</span>
-    <span class="box">f"Hello, { name }!"</span>
-  </div>
-  <p class="lead"><strong>この3つは同じ名前でなければいけません。</strong></p>
-  <p><code class="inline">&lt;name&gt;</code> を <code class="inline">&lt;user&gt;</code> に変えたら、<strong>関数の引数も <code class="inline">user</code> に変えます。</strong>片方だけ変えると起動しません。</p>
-</section>
-
-<!-- 35 f文字列 -->
-<section class="slide" data-title="f文字列で埋め込む">
-  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
-  <h2>受け取った名前を、文字に混ぜる</h2>
-  <p>ここは<strong>すでに知っている f文字列</strong>です。</p>
-  <div class="code">
-    <div class="code-head"><span class="code-lang">Python</span></div>
-<pre><code><span class="c-com"># 頭に f を付けて、{ } の中に変数を書く</span>
-<span class="c-cmd">return</span> f<span class="c-str">"&lt;p&gt;Hello, { name }!&lt;/p&gt;"</span>
-
-<span class="c-com"># f を付け忘れると、そのまま文字として出る</span>
-<span class="c-cmd">return</span> <span class="c-str">"&lt;p&gt;Hello, { name }!&lt;/p&gt;"</span>   <span class="c-com"># → 画面に { name } と出る</span></code></pre>
-  </div>
-  <div class="note warn">
-    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>画面に <code>{ name }</code> と出たら</div>
-    <p>エラーになりません。<strong>そのまま表示されるだけ</strong>なので気づきにくい。<code class="inline">f</code> の付け忘れを疑ってください。</p>
-  </div>
-</section>
-
-<!-- 36 スラッシュ -->
-<section class="slide" data-title="スラッシュは含められない">
-  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
-  <h2><span class="cmdname">&lt;name&gt;</span> に入らないもの</h2>
-  <p><code class="inline">&lt;name&gt;</code> が受け取れるのは、<strong>スラッシュを含まない1区間だけ</strong>です。</p>
-  <table>
-    <tr><th style="width:36%">開いた URL</th><th>結果</th></tr>
-    <tr><td><code>/taro</code></td><td>Hello, taro!</td></tr>
-    <tr><td><code>/山田</code></td><td>Hello, 山田!　（日本語も通る）</td></tr>
-    <tr><td><code>/taro/suzuki</code></td><td><strong>404</strong>　スラッシュをまたげない</td></tr>
-    <tr><td><code>/</code></td><td>Hello, World!　（<code>&lt;name&gt;</code> ではなく <code>/</code> の荷札に当たる）</td></tr>
-  </table>
-  <p>いちばん下が大事です。<strong><code class="inline">/</code> と <code class="inline">/&lt;name&gt;</code> は別の荷札</strong>なので、両方書いておけば両方動きます。</p>
-</section>
-
-<!-- 37 完成コード -->
-<section class="slide" data-title="完成コード">
-  <div class="eyebrow"><span class="part">Summary</span><span class="bar"></span></div>
-  <h2>完成した <span class="cmdname">app.py</span></h2>
+<!-- 5 出発点 -->
+<section class="slide" data-title="今日の出発点">
+  <div class="eyebrow"><span class="part">Part 00</span><span class="bar"></span></div>
+  <h2>今日の出発点</h2>
+  <p>前回つくった <code class="inline">app.py</code> です。<strong>これが手元にあるところから始めます。</strong></p>
   <div class="code">
     <div class="code-head"><span class="code-lang">Python</span><button class="copy" type="button">コピー</button></div>
 <pre><code><span class="c-cmd">from</span> flask <span class="c-cmd">import</span> Flask
@@ -733,60 +268,671 @@ app = Flask(__name__)
 <span class="c-cmd">if</span> __name__ == <span class="c-str">"__main__"</span>:
     app.run()</code></pre>
   </div>
-  <p><strong>これで全部です。</strong>家で復習するときは、この1枚だけ見れば戻せます。</p>
+  <p>手元のものと違っていたら、<strong>上のコードで上書きしてください。</strong>前回のスライドは <a href="flask-first-web-app.html">はじめての Web アプリ</a> から見られます。</p>
 </section>
 
-<!-- 38 やってみよう -->
-<section class="slide" data-title="やってみよう">
+<!-- 6 起動の3手順 -->
+<section class="slide" data-title="起動までの3手順">
+  <div class="eyebrow"><span class="part">Part 00</span><span class="bar"></span></div>
+  <h2>動かすまでの <span class="latin">3</span> 手順</h2>
+  <ol class="steps">
+    <li><b><span class="latin">VS Code</span> で、前回のディレクトリを開く</b><code class="inline">app.py</code> がサイドバーに見える状態にする。</li>
+    <li><b>ターミナルを開いて、仮想環境を有効にする</b>メニューの「ターミナル」→「新しいターミナル」。</li>
+    <li><b>起動する</b><code class="inline">python app.py</code>。ターミナルが戻ってこないのが正常。</li>
+  </ol>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">PowerShell</span><button class="copy" type="button">コピー</button></div>
+<pre><code>venv\Scripts\Activate.ps1
+<span class="c-cmd">python</span> app.py</code></pre>
+  </div>
+  <p>仮想環境が有効になると、<strong>行の先頭に <code class="inline">(venv)</code> が付きます。</strong>これが付いていないときは、2番目をやり直してください。</p>
+</section>
+
+<!-- 7 確認00 -->
+<section class="slide" data-title="確認: ここまでで正しい状態">
+  <div class="eyebrow"><span class="part">Part 00 — 確認</span><span class="bar"></span></div>
+  <h2>ここまでで、こうなっていれば正しい</h2>
+  <div class="note do">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--success)"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.4 3 3 6-6.4" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>正しい状態</div>
+    <p><strong>ターミナル</strong>に <code class="inline">* Running on http://127.0.0.1:5000</code> が出ている。<br>
+    <strong>ブラウザ</strong>で <code class="inline">127.0.0.1:5000</code> を開くと <strong>Hello, World!</strong>、<code class="inline">127.0.0.1:5000/taro</code> なら <strong>Hello, taro!</strong> と出る。</p>
+  </div>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>そうなっていないとき</div>
+    <p><b>ブラウザに「接続できません」と出る</b> — サーバーが動いていません。ターミナルに <code class="inline">Running on</code> が出ているか見てください。<br>
+    <b><code class="inline">python</code> が見つからない、<code class="inline">flask</code> が無いと言われる</b> — <code class="inline">(venv)</code> が付いていません。手順2からやり直してください。<br>
+    <b>それでも進めない</b> — <a href="../cs/how-to-get-unstuck.html">詰まったときの動き方</a>を開いてください。</p>
+  </div>
+</section>
+
+<!-- 8 Part01 扉 -->
+<section class="slide cover" data-title="01 なぜ HTML を分けるのか">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 01</span></div>
+  <h1>なぜ <span class="latin">HTML</span> を分けるのか</h1>
+  <p class="sub">いまのやり方のどこが苦しいのか、先に見る</p>
+</section>
+
+<!-- 9 return に書き続けると -->
+<section class="slide" data-title="return に書き続けると">
+  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
+  <h2><span class="cmdname">return</span> に書き続けると、どうなるか</h2>
+  <p>前回は <code class="inline">return "&lt;p&gt;Hello, World!&lt;/p&gt;"</code> のように、返したい文字を直接書きました。1行ならこれで平気です。では、<strong>見出しがあって、文章があって、箇条書きもあるページ</strong>にしたくなったら——</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Python</span></div>
+<pre><code><span class="c-cmd">@app.route</span>(<span class="c-str">"/"</span>)
+<span class="c-cmd">def</span> top():
+    <span class="c-cmd">return</span> <span class="c-str">"&lt;h1&gt;自己紹介&lt;/h1&gt;&lt;p&gt;こんにちは&lt;/p&gt;&lt;ul&gt;&lt;li&gt;ラーメン&lt;/li&gt;"</span> \
+           <span class="c-str">"&lt;li&gt;ゲーム&lt;/li&gt;&lt;li&gt;猫&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;よろしく&lt;/p&gt;"</span></code></pre>
+  </div>
+  <p class="big">読めません。</p>
+  <p>しかも、<strong>どこかのタグを閉じ忘れても、<span class="latin">Python</span> は何も言いません。</strong><span class="latin">Python</span> から見れば、これはただの長い文字列です。中身が正しい <span class="latin">HTML</span> かどうかは、見てくれません。</p>
+</section>
+
+<!-- 11 分担 -->
+<section class="slide" data-title="2つのファイルに分ける">
+  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
+  <h2>だから、<span class="latin">2</span> つに分けます</h2>
+  <table>
+    <tr><th style="width:38%">ファイル</th><th>担当</th></tr>
+    <tr><td><code>app.py</code><br><span style="color:var(--text-sub);font-size:14px">これまで書いてきたもの</span></td><td><strong>どの <span class="latin">URL</span> で、どんな値を使うか</strong>を決める</td></tr>
+    <tr><td><code>templates/index.html</code><br><span style="color:var(--text-sub);font-size:14px">今日つくるもの</span></td><td><strong>その値を、どう見せるか</strong>を書く</td></tr>
+  </table>
+  <p>この <code class="inline">index.html</code> のことを <strong>テンプレート</strong>（型紙）と呼びます。<strong>穴があいた型紙を1枚つくって、そこに値を流し込む</strong>イメージです。</p>
+  <div class="note">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>型紙は使い回せる</div>
+    <p>型紙が1枚あれば、<strong><code class="inline">/taro</code> でも <code class="inline">/hanako</code> でも、同じ型紙に違う名前を流し込むだけ</strong>で済みます。ここが今日いちばん大事なところです。</p>
+  </div>
+</section>
+
+<!-- 12 今日の絵 -->
+<section class="slide" data-title="今日の全体像">
+  <div class="eyebrow"><span class="part">Part 01</span><span class="bar"></span></div>
+  <h2>今日つくるものの全体像</h2>
+  <div class="flow vert">
+    <span class="box layer">ブラウザ</span>
+    <span class="arrow">↓</span>
+    <span class="lbl">リクエスト　「<span class="latin">/taro</span> をください」</span>
+    <span class="arrow">↓</span>
+    <span class="box layer">サーバー<small>app.py が index.html を読んで、値を流し込んで、1枚の HTML に組み立てる</small></span>
+    <span class="arrow">↓</span>
+    <span class="lbl">レスポンス　<strong>組み立て終わった <span class="latin">HTML</span></strong></span>
+    <span class="arrow">↓</span>
+    <span class="box layer">ブラウザ<small>受け取って画面に表示する</small></span>
+  </div>
+  <p>前回の図と同じです。<strong>変わったのは、サーバーの中だけ</strong>です。レスポンスの中身が、手で書いた文字列から<strong>組み立てた <span class="latin">HTML</span></strong>になります。</p>
+</section>
+
+<!-- 13 Part02 扉 -->
+<section class="slide cover" data-title="02 HTML の最低限">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 02</span></div>
+  <h1><span class="latin">HTML</span> の最低限</h1>
+  <p class="sub">今日使うのは、タグ <span class="latin">3</span> 種類だけ</p>
+  <p class="big" style="margin-top:24px"><span class="latin">HTML</span> はここで全部やりません。<strong>今日必要なぶんだけ</strong>です。</p>
+</section>
+
+<!-- 14 タグ -->
+<section class="slide" data-title="HTML はタグで囲む">
+  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
+  <h2><span class="latin">HTML</span> は、文字をタグで囲んだもの</h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">HTML</span></div>
+<pre><code><span class="c-opt">&lt;h1&gt;</span>自己紹介<span class="c-opt">&lt;/h1&gt;</span></code></pre>
+    <div class="out"><b>ブラウザの表示</b>自己紹介　← 大きい文字になる</div>
+  </div>
+  <p><code class="inline">&lt;h1&gt;</code> が<strong>開始タグ</strong>、<code class="inline">&lt;/h1&gt;</code> が<strong>終了タグ</strong>です。終了タグには<strong>スラッシュが付きます。</strong>この2つで囲んだ範囲が「見出し」という扱いになります。</p>
+  <p><strong>タグそのものは画面に出ません。</strong>「ここは見出し」とブラウザに教えるための印です。</p>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>開いたら、必ず閉じる</div>
+    <p>閉じ忘れると<strong>そこから下が全部おかしくなります。</strong>しかもエラーは出ません。ブラウザは文句を言わずに、変な見た目のまま表示します。</p>
+  </div>
+</section>
+
+<!-- 15 3つのタグ -->
+<section class="slide" data-title="今日使うタグは3つ">
+  <div class="eyebrow"><span class="part">Part 02</span><span class="bar"></span></div>
+  <h2>今日使うタグ</h2>
+  <table>
+    <tr><th style="width:30%">タグ</th><th>意味</th></tr>
+    <tr><td><code>&lt;h1&gt;</code> 〜 <code>&lt;/h1&gt;</code></td><td><strong>見出し。</strong>そのページの題名</td></tr>
+    <tr><td><code>&lt;p&gt;</code> 〜 <code>&lt;/p&gt;</code></td><td><strong>段落。</strong>ふつうの文章1つぶん</td></tr>
+    <tr><td><code>&lt;ul&gt;</code> と <code>&lt;li&gt;</code></td><td><strong>箇条書き。</strong><code>&lt;ul&gt;</code> で囲んだ中に、<code>&lt;li&gt;</code> を項目の数だけ並べる</td></tr>
+  </table>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">HTML</span></div>
+<pre><code><span class="c-opt">&lt;ul&gt;</span>
+  <span class="c-opt">&lt;li&gt;</span>ラーメン<span class="c-opt">&lt;/li&gt;</span>
+  <span class="c-opt">&lt;li&gt;</span>ゲーム<span class="c-opt">&lt;/li&gt;</span>
+<span class="c-opt">&lt;/ul&gt;</span></code></pre>
+    <div class="out"><b>ブラウザの表示</b>・ラーメン
+・ゲーム</div>
+  </div>
+  <p><code class="inline">&lt;li&gt;</code> は <strong><code class="inline">&lt;ul&gt;</code> の中に入れます。</strong>外に出すと、箇条書きになりません。</p>
+</section>
+
+<!-- 17 Part03 扉 -->
+<section class="slide cover" data-title="03 templates に置いて返す">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 03</span></div>
+  <h1><span class="latin">templates</span> に置いて返す</h1>
+  <p class="sub">置き場所が決まっている。そこだけ守れば動く</p>
+</section>
+
+<!-- 18 置き場所 -->
+<section class="slide" data-title="置き場所は決まっている">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2><span class="latin">HTML</span> は <span class="cmdname">templates</span> の中に置く</h2>
+  <p><span class="latin">Flask</span> は <strong><code class="inline">templates</code> という名前のディレクトリの中を、自動で探します。</strong>だから、こういう形にします。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Tree</span></div>
+<pre><code>my-flask-app\
+├─ app.py
+├─ templates\
+│   └─ index.html      <span class="c-com">← 今日つくる</span>
+└─ venv\</code></pre>
+  </div>
+  <table>
+    <tr><th style="width:42%">守ること</th><th>間違えると</th></tr>
+    <tr><td>名前は <code>templates</code>（<strong>最後に <span class="latin">s</span></strong>）</td><td>見つけてもらえない</td></tr>
+    <tr><td><code>app.py</code> と<strong>同じ階層</strong>に置く</td><td>見つけてもらえない</td></tr>
+  </table>
+  <p>場所が決まっているので、<strong>あとでファイル名だけ書けば呼び出せます。</strong>長い道順を書かなくて済みます。</p>
+</section>
+
+<!-- 19 index.html をつくる -->
+<section class="slide" data-title="index.html をつくる">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2><span class="cmdname">templates/index.html</span> をつくる</h2>
+  <p><span class="latin">VS Code</span> で <code class="inline">templates</code> ディレクトリを作り、その中に <code class="inline">index.html</code> を作って、これを打ちます。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">HTML</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-com">&lt;!DOCTYPE html&gt;</span>
+<span class="c-opt">&lt;html</span> lang=<span class="c-str">"ja"</span><span class="c-opt">&gt;</span>
+<span class="c-opt">&lt;head&gt;</span>
+  <span class="c-opt">&lt;meta</span> charset=<span class="c-str">"UTF-8"</span><span class="c-opt">&gt;</span>
+  <span class="c-opt">&lt;title&gt;</span>自己紹介<span class="c-opt">&lt;/title&gt;</span>
+<span class="c-opt">&lt;/head&gt;</span>
+<span class="c-opt">&lt;body&gt;</span>
+  <span class="c-opt">&lt;h1&gt;</span>Hello, ゲスト!<span class="c-opt">&lt;/h1&gt;</span>
+  <span class="c-opt">&lt;p&gt;</span>はじめまして。このページは Flask で作りました。<span class="c-opt">&lt;/p&gt;</span>
+<span class="c-opt">&lt;/body&gt;</span>
+<span class="c-opt">&lt;/html&gt;</span></code></pre>
+  </div>
+  <p class="lead"><strong>見るのは <code class="inline">&lt;body&gt;</code> の中だけです。</strong></p>
+  <p>上の <span class="latin">6</span> 行は、どの <span class="latin">HTML</span> でもほとんど同じ<strong>決まり文句</strong>です。1行ずつの意味は別の回でやります。<code class="inline">&lt;title&gt;</code> はブラウザのタブに出る文字です。<strong>いまは「ゲスト」で固定</strong>で、名前ごとに変えるのは <span class="latin">Part 04</span> でやります。</p>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><code class="inline">charset="UTF-8"</code> は消さない</div>
+    <p>この1行が無いと、<strong>日本語が「譁蟄怜喧」のように化けます。</strong>打ち間違えても化けます。</p>
+  </div>
+</section>
+
+<!-- 20 app.py を直す -->
+<section class="slide" data-title="app.py を2か所直す">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2><span class="cmdname">app.py</span> は <span class="latin">2</span> か所だけ直す</h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Python</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">from</span> flask <span class="c-cmd">import</span> Flask
+<span class="c-cmd">from</span> flask <span class="c-cmd">import</span> render_template   <span class="c-com"># ① 追加</span>
+
+app = Flask(__name__)
+
+<span class="c-cmd">@app.route</span>(<span class="c-str">"/"</span>)
+<span class="c-cmd">def</span> hello_world():
+    <span class="c-cmd">return</span> render_template(<span class="c-str">'index.html'</span>)   <span class="c-com"># ② 書き換え</span></code></pre>
+  </div>
+  <table>
+    <tr><td style="width:46%"><code>import render_template</code></td><td><strong><span class="latin">HTML</span> を読んで組み立てる道具</strong>を使えるようにする</td></tr>
+    <tr><td><code>render_template('index.html')</code></td><td><code>templates</code> の中の <code>index.html</code> を読んで、<strong>その中身を返す</strong></td></tr>
+  </table>
+  <p><code class="inline">templates/index.html</code> とは書きません。<strong>ファイル名だけ</strong>です。場所は <span class="latin">Flask</span> が知っています。<code class="inline">/&lt;name&gt;</code> のほうは、まだ触りません。</p>
+  <p>保存したら、ターミナルで <kbd>Ctrl</kbd>+<kbd>C</kbd> → <code class="inline">python app.py</code> で<strong>起動し直して</strong>、ブラウザで <code class="inline">127.0.0.1:5000</code> を開いてください。</p>
+</section>
+
+<!-- 22 確認03 -->
+<section class="slide" data-title="確認: HTML が返っているか">
+  <div class="eyebrow"><span class="part">Part 03 — 確認</span><span class="bar"></span></div>
+  <h2>ここまでで、こうなっていれば正しい</h2>
+  <div class="note do">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--success)"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.4 3 3 6-6.4" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>正しい状態</div>
+    <p><code class="inline">127.0.0.1:5000</code> を開くと、<strong>大きい文字で「Hello, ゲスト!」</strong>、その下に<strong>ふつうの大きさで「はじめまして。…」</strong>の2行が出ている。<br>
+    ブラウザのタブには <strong>自己紹介</strong> と出ている。</p>
+  </div>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>そうなっていないとき</div>
+    <p><b>前と同じ <span class="latin">Hello, World!</span> が出る</b> — 起動し直していません。<kbd>Ctrl</kbd>+<kbd>C</kbd> → <code class="inline">python app.py</code>。<br>
+    <b>画面に <code class="inline">&lt;h1&gt;</code> という文字がそのまま出ている</b> — <span class="latin">HTML</span> の打ち間違いです。<code class="inline">&lt;</code> と <code class="inline">&gt;</code> を確かめてください。<br>
+    <b>日本語が化けている</b> — <code class="inline">charset="UTF-8"</code> の行を見てください。<br>
+    <b><code class="inline">TemplateNotFound</code> と出た</b> — <strong>2枚あとのスライド</strong>に書いてあります。</p>
+  </div>
+</section>
+
+<!-- 23 直しても変わらない -->
+<section class="slide" data-title="直しても変わらないとき">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2>これから必ず出会う症状</h2>
+  <p class="lead"><strong><span class="latin">HTML</span> を直して保存したのに、ブラウザが変わらない。</strong></p>
+  <p>これは<strong>故障ではありません。</strong><span class="latin">Flask</span> は<strong>起動したときの <span class="latin">HTML</span> を、ずっと使い続けます。</strong>あとで直したぶんは、見てくれません。</p>
+  <div class="note do">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--success)"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.4 3 3 6-6.4" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>変わらなかったら、これをやる</div>
+    <p><b>1.</b> ターミナルに戻る　<b>2.</b> <kbd>Ctrl</kbd>+<kbd>C</kbd> で止める　<b>3.</b> <code class="inline">python app.py</code> で起動し直す　<b>4.</b> ブラウザを再読み込み</p>
+  </div>
+  <p class="big"><span class="latin">app.py</span> も <span class="latin">HTML</span> も、直したら止めて起動し直す。</p>
+  <p>前回と同じルールです。<strong>今日は <span class="latin">HTML</span> を何度も直すので、この回数がぐっと増えます。</strong>「変わらない」と思ったら、まずこれを疑ってください。</p>
+</section>
+
+<!-- 24 TemplateNotFound -->
+<section class="slide" data-title="TemplateNotFound が出たとき">
+  <div class="eyebrow"><span class="part">Part 03</span><span class="bar"></span></div>
+  <h2><span class="cmdname">TemplateNotFound</span> と出たとき</h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Error</span></div>
+<pre><code>jinja2.exceptions.TemplateNotFound: index.html</code></pre>
+  </div>
+  <p class="lead"><strong>「その <span class="latin">HTML</span> が見つからない」</strong>という意味です。中身の間違いではなく、<strong>置き場所の間違い</strong>です。</p>
+  <p>上から順に確かめてください。</p>
+  <ol class="steps">
+    <li><b>ディレクトリ名は <code class="inline">templates</code> か</b><code class="inline">template</code>（<span class="latin">s</span> が無い）、<code class="inline">Templates</code>（大文字）は別物です。</li>
+    <li><b><code class="inline">app.py</code> と同じ階層にあるか</b><code class="inline">venv</code> の中に作ってしまう人がいます。</li>
+    <li><b><code class="inline">index.html</code> は <code class="inline">templates</code> の中にあるか</b><span class="latin">VS Code</span> のサイドバーで、<code class="inline">templates</code> を開いて確かめてください。</li>
+  </ol>
+</section>
+
+<!-- 25 Part04 扉 -->
+<section class="slide cover" data-title="04 値を渡す">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 04</span></div>
+  <h1>値を渡す</h1>
+  <p class="sub">型紙に穴をあけて、<span class="latin">Python</span> から流し込む</p>
+  <p class="big" style="margin-top:24px">ここが今日の山場です。</p>
+</section>
+
+<!-- 26 ゲスト固定の問題 -->
+<section class="slide" data-title="ゲストのままでは困る">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>いまは「ゲスト」で固定されている</h2>
+  <p><span class="latin">HTML</span> にこう書いたので、<strong>誰が開いても「ゲスト」</strong>です。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">HTML</span></div>
+<pre><code>  <span class="c-opt">&lt;h1&gt;</span>Hello, ゲスト!<span class="c-opt">&lt;/h1&gt;</span></code></pre>
+  </div>
+  <p>前回は <code class="inline">/taro</code> で <strong>Hello, taro!</strong> と出せていました。あれを <span class="latin">HTML</span> でもやりたい。</p>
+  <p class="lead"><strong>では、名前ごとに <span class="latin">HTML</span> を作るのか。</strong></p>
+  <p>作りません。<code class="inline">taro.html</code>、<code class="inline">hanako.html</code>…と増やしていたら、前回の「<span class="latin">100</span>人いたら <span class="latin">100</span> 個書くのか」と同じことになります。<strong>名前の部分だけを穴にします。</strong></p>
+</section>
+
+<!-- 27 2か所直す -->
+<section class="slide" data-title="穴をあけて、値を渡す">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>直すのは <span class="latin">2</span> か所</h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">HTML</span><button class="copy" type="button">コピー</button></div>
+<pre><code>  <span class="c-opt">&lt;h1&gt;</span>Hello, <span class="c-cmd">{{ name }}</span>!<span class="c-opt">&lt;/h1&gt;</span></code></pre>
+  </div>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Python</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">@app.route</span>(<span class="c-str">"/"</span>)
+<span class="c-cmd">def</span> hello_world():
+    <span class="c-cmd">return</span> render_template(<span class="c-str">'index.html'</span>, name=<span class="c-str">"ゲスト"</span>)</code></pre>
+  </div>
+  <p><code class="inline">name=</code> が<strong>穴の名前</strong>、その右が<strong>流し込む値</strong>です。</p>
+  <table>
+    <tr><th style="width:36%">書いた場所</th><th>役割</th></tr>
+    <tr><td><span class="latin">HTML</span> の <code>{{ name }}</code></td><td>ここに値が入る、という<strong>穴</strong></td></tr>
+    <tr><td><code>name=</code> の左側</td><td><strong>穴の名前。</strong><span class="latin">HTML</span> 側と同じ綴りにする</td></tr>
+    <tr><td><code>name=</code> の右側</td><td>実際に入る<strong>値</strong></td></tr>
+  </table>
+</section>
+
+<!-- 28 確認04a -->
+<section class="slide" data-title="確認: 穴に値が入ったか">
+  <div class="eyebrow"><span class="part">Part 04 — 確認</span><span class="bar"></span></div>
+  <h2>止めて起動し直して、確認</h2>
+  <div class="note do">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--success)"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.4 3 3 6-6.4" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>正しい状態</div>
+    <p><code class="inline">127.0.0.1:5000</code> を開くと、<strong>大きい文字で「Hello, ゲスト!」</strong>と出ている。<br>
+    見た目は<strong>さっきと同じ</strong>です。中の作りが変わりました。</p>
+  </div>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>そうなっていないとき</div>
+    <p><b>画面に <code class="inline">{ name }</code> とそのまま出る</b> — 波かっこが <span class="latin">1</span> つです。<strong><code class="inline">{{</code> と <code class="inline">}}</code> は2つずつ</strong>必要です。<br>
+    <b>「Hello, !」と、名前のところが空っぽ</b> — <span class="latin">Python</span> 側で渡していません。<code class="inline">name=</code> の綴りと、<span class="latin">HTML</span> 側の <code class="inline">{{ name }}</code> の綴りを見比べてください。<strong>違う名前だと、何も入らず空になります。</strong>エラーは出ません。<br>
+    <b>何も変わらない</b> — 起動し直していません。</p>
+  </div>
+</section>
+
+<!-- 29 サーバーで組み立て -->
+<section class="slide" data-title="置き換えはサーバーで起きている">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>穴が埋まるのは、サーバーの中</h2>
+  <div class="flow vert">
+    <span class="box layer">型紙　<span class="latin">index.html</span><small>&lt;h1&gt;Hello, {{ name }}!&lt;/h1&gt;</small></span>
+    <span class="lbl">＋　渡した値　<span class="latin">name = "taro"</span></span>
+    <span class="arrow">↓</span>
+    <span class="box layer">サーバーが組み立てる<small>render_template がここで穴を埋める</small></span>
+    <span class="arrow">↓</span>
+    <span class="box">&lt;h1&gt;Hello, taro!&lt;/h1&gt;</span>
+    <span class="lbl">これがレスポンスとしてブラウザへ届く</span>
+  </div>
+  <p class="big">ブラウザは <code class="inline">{{ name }}</code> を知りません。</p>
+  <p><strong>ブラウザに届く前に、置き換えは終わっています。</strong>ブラウザが受け取るのは、ただの <span class="latin">HTML</span> です。</p>
+</section>
+
+<!-- 30 ソースを表示 -->
+<section class="slide" data-title="ソースを表示して確かめる">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>自分の目で確かめる</h2>
+  <p>いまの話は、<strong>その場で確認できます。</strong>ブラウザでページを開いて <kbd>Ctrl</kbd>+<kbd>U</kbd> を押してください。<strong>届いた <span class="latin">HTML</span> がそのまま見られます。</strong></p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Source</span></div>
+<pre><code><span class="c-com">&lt;!DOCTYPE html&gt;</span>
+<span class="c-opt">&lt;html</span> lang=<span class="c-str">"ja"</span><span class="c-opt">&gt;</span>
+...
+  <span class="c-opt">&lt;h1&gt;</span>Hello, ゲスト!<span class="c-opt">&lt;/h1&gt;</span></code></pre>
+  </div>
+  <p class="lead"><strong><code class="inline">{{ name }}</code> は、どこにも残っていません。</strong></p>
+  <p>自分が書いた <span class="latin">HTML</span> と見比べてください。<strong>書いたものと、届いたものが違う。</strong>その差を作っているのが <code class="inline">render_template</code> です。</p>
+</section>
+
+<!-- 31 /<name> も同じ HTML -->
+<section class="slide" data-title="同じ HTML を2回使う">
+  <div class="eyebrow"><span class="part">Part 04</span><span class="bar"></span></div>
+  <h2>同じ型紙を、もう <span class="latin">1</span> つの <span class="latin">URL</span> でも使う</h2>
+  <p>前回つくった <code class="inline">/&lt;name&gt;</code> のほうも、<span class="latin">HTML</span> を返すように直します。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Python</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">@app.route</span>(<span class="c-str">"/"</span>)
+<span class="c-cmd">def</span> hello_world():
+    <span class="c-cmd">return</span> render_template(<span class="c-str">'index.html'</span>, name=<span class="c-str">"ゲスト"</span>)
+
+<span class="c-cmd">@app.route</span>(<span class="c-str">"/&lt;name&gt;"</span>)
+<span class="c-cmd">def</span> hello(name):
+    <span class="c-cmd">return</span> render_template(<span class="c-str">'index.html'</span>, name=name)</code></pre>
+  </div>
+  <p class="lead"><strong><span class="latin">HTML</span> は <span class="latin">1</span> 枚のままです。</strong></p>
+  <p>下の <code class="inline">name=name</code> は、<strong>左が穴の名前、右が <span class="latin">URL</span> から受け取った値</strong>です。同じ字が並んでいますが、別のものです。<strong>f文字列はもう使いません。</strong>文字をつなぐ仕事は <span class="latin">HTML</span> 側に移りました。</p>
+</section>
+
+<!-- 32 確認04b -->
+<section class="slide" data-title="確認: 2つの URL で違う名前">
+  <div class="eyebrow"><span class="part">Part 04 — 確認</span><span class="bar"></span></div>
+  <h2>ここまでで、こうなっていれば正しい</h2>
+  <div class="note do">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--success)"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.4 3 3 6-6.4" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>正しい状態</div>
+    <p>起動し直して、<strong>2つの <span class="latin">URL</span> を順に開いてください。</strong></p>
+  </div>
+  <table>
+    <tr><th style="width:42%">開いた <span class="latin">URL</span></th><th>大きい文字で出るもの</th></tr>
+    <tr><td><code>127.0.0.1:5000/</code></td><td>Hello, ゲスト!</td></tr>
+    <tr><td><code>127.0.0.1:5000/taro</code></td><td>Hello, taro!</td></tr>
+    <tr><td><code>127.0.0.1:5000/山田</code></td><td>Hello, 山田!</td></tr>
+  </table>
+  <p class="big">どれも、同じ <span class="latin">index.html</span> <span class="latin">1</span> 枚が出しています。</p>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>そうなっていないとき</div>
+    <p><b><code class="inline">/taro</code> で前回の文字（小さい字の <span class="latin">Hello, taro!</span>）が出る</b> — 下の関数を直していません。<code class="inline">/&lt;name&gt;</code> のほうの <code class="inline">return</code> を見てください。</p>
+  </div>
+</section>
+
+<!-- Part05 扉 -->
+<section class="slide cover" data-title="05 for と if">
+  <div class="eyebrow" style="justify-content:center"><span class="part">Part 05</span></div>
+  <h1><span class="latin">for</span> と <span class="latin">if</span></h1>
+  <p class="sub"><span class="latin">HTML</span> の中で、繰り返す／場合分けする</p>
+</section>
+
+<!-- リストを渡す -->
+<section class="slide" data-title="リストを渡す">
+  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
+  <h2>「好きなもの」を並べたい</h2>
+  <p><span class="latin">HTML</span> に <code class="inline">&lt;li&gt;</code> を直接3つ書けば出ますが、<strong>それでは増やすたびに <span class="latin">HTML</span> を直すことになります。</strong>中身は <span class="latin">Python</span> 側に持たせます。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Python</span><button class="copy" type="button">コピー</button></div>
+<pre><code>favorites = [
+    <span class="c-str">"ラーメン"</span>,
+    <span class="c-str">"ゲーム"</span>,
+    <span class="c-str">"猫"</span>,
+]
+
+<span class="c-cmd">@app.route</span>(<span class="c-str">"/"</span>)
+<span class="c-cmd">def</span> hello_world():
+    <span class="c-cmd">return</span> render_template(<span class="c-str">'index.html'</span>, name=<span class="c-str">"ゲスト"</span>, favorites=favorites)</code></pre>
+  </div>
+  <p>穴は<strong>いくつでも渡せます。</strong>カンマで区切って並べるだけです。<code class="inline">favorites=favorites</code> も、左が穴の名前、右が値です。</p>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>変数名に <code class="inline">list</code> と付けない</div>
+    <p><code class="inline">list</code> は <span class="latin">Python</span> が元から持っている名前です。自分の変数に使うと、<strong>そのファイルで <code class="inline">list()</code> が使えなくなります。</strong>「何が入っているか」が分かる名前を付けてください。</p>
+  </div>
+</section>
+
+<!-- for -->
+<section class="slide" data-title="{% for %} で繰り返す">
+  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
+  <h2><span class="latin">HTML</span> の中で繰り返す</h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">HTML</span><button class="copy" type="button">コピー</button></div>
+<pre><code>  <span class="c-opt">&lt;ul&gt;</span>
+    <span class="c-cmd">{% for item in favorites %}</span>
+    <span class="c-opt">&lt;li&gt;</span><span class="c-cmd">{{ item }}</span><span class="c-opt">&lt;/li&gt;</span>
+    <span class="c-cmd">{% endfor %}</span>
+  <span class="c-opt">&lt;/ul&gt;</span></code></pre>
+    <div class="out"><b>ブラウザの表示</b>・ラーメン
+・ゲーム
+・猫</div>
+  </div>
+  <p><code class="inline">&lt;li&gt;</code> は <strong>1行しか書いていません。</strong>リストの数だけ、その行が繰り返されます。</p>
+  <p><span class="latin">Python</span> の <code class="inline">for</code> と考え方は同じです。違うのは <strong><code class="inline">{% endfor %}</code> で終わりを書く</strong>ことです。<span class="latin">HTML</span> には、字下げで範囲を表す仕組みがないからです。</p>
+</section>
+
+<!-- {{ }} と {% %} -->
+<section class="slide" data-title="{{ }} と {% %} の違い">
+  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
+  <h2>かっこが <span class="latin">2</span> 種類ある</h2>
+  <table>
+    <tr><th style="width:30%">書き方</th><th>役割</th></tr>
+    <tr><td><code>{{ ... }}</code><br><span style="color:var(--text-sub);font-size:14px">波かっこ2つ</span></td><td><strong>値を出す。</strong>ここに文字が現れる</td></tr>
+    <tr><td><code>{% ... %}</code><br><span style="color:var(--text-sub);font-size:14px">かっことパーセント</span></td><td><strong>指示。</strong>画面には何も出ない</td></tr>
+  </table>
+  <p><code class="inline">{% for %}</code> 自体は画面に出ません。<strong>「ここから下を繰り返して」という指示</strong>だからです。出るのは、その中の <code class="inline">{{ item }}</code> です。</p>
+  <div class="note">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>指示は、必ずペアで閉じる</div>
+    <p><code class="inline">{% for %}</code> には <code class="inline">{% endfor %}</code>、<code class="inline">{% if %}</code> には <code class="inline">{% endif %}</code>。<strong>閉じ忘れがこの回いちばん多いミスです。</strong></p>
+  </div>
+</section>
+
+<!-- if / else -->
+<section class="slide" data-title="{% if %} で場合分け">
+  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
+  <h2>リストが空のときはどうなるか</h2>
+  <p><code class="inline">favorites</code> が空（<code class="inline">[]</code>）だと、<strong>箇条書きの枠だけが出て、中身が何も無いページ</strong>になります。そういうときは、別の文を出します。</p>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">HTML</span><button class="copy" type="button">コピー</button></div>
+<pre><code>  <span class="c-cmd">{% if favorites %}</span>
+  <span class="c-opt">&lt;ul&gt;</span>
+    <span class="c-cmd">{% for item in favorites %}</span>
+    <span class="c-opt">&lt;li&gt;</span><span class="c-cmd">{{ item }}</span><span class="c-opt">&lt;/li&gt;</span>
+    <span class="c-cmd">{% endfor %}</span>
+  <span class="c-opt">&lt;/ul&gt;</span>
+  <span class="c-cmd">{% else %}</span>
+  <span class="c-opt">&lt;p&gt;</span>まだ何もありません。<span class="c-opt">&lt;/p&gt;</span>
+  <span class="c-cmd">{% endif %}</span></code></pre>
+  </div>
+  <p><strong>中身があるときは箇条書き、無いときは「まだ何もありません。」</strong>と出ます。<span class="latin">Python</span> の <code class="inline">if</code> / <code class="inline">else</code> と同じです。</p>
+  <p>地味に見えますが、<strong>実際のアプリでは必ず書きます。</strong>登録が <span class="latin">0</span> 件のときに空っぽの画面を出すわけにはいかないからです。</p>
+</section>
+
+<!-- 補足2つ -->
+<section class="slide" data-title="名前を2つ置いておく">
+  <div class="eyebrow"><span class="part">Part 05</span><span class="bar"></span></div>
+  <h2>名前だけ置いておきます</h2>
+  <div class="note">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>番号を振りたくなったら <code class="inline">loop</code></div>
+    <p><code class="inline">{% for %}</code> の中では <code class="inline">{{ loop.index }}</code> と書くと<strong>何周目か</strong>が出ます。<strong><span class="latin">1</span> から始まります</strong>（<span class="latin">0</span> ではありません）。今日は使いませんが、名前を知っていれば検索できます。</p>
+  </div>
+  <div class="note">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 10.5v7M12 6.6v1.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>この書き方の名前は <span class="latin">Jinja</span>（ジンジャ）</div>
+    <p><code class="inline">{{ }}</code> と <code class="inline">{% %}</code> は <span class="latin">Flask</span> のものではなく、<strong><span class="latin">Jinja</span> という別の道具</strong>の書き方です。<span class="latin">Flask</span> と一緒に入ります。<br>
+    さっきのエラーに <code class="inline">jinja2.exceptions.TemplateNotFound</code> と出ていたのは、これが原因を知らせていたからです。</p>
+  </div>
+  <p>検索するときは <strong>「<span class="latin">flask jinja for</span>」</strong>のように、<span class="latin">Jinja</span> を足すと目的の情報に当たります。</p>
+</section>
+
+<!-- 確認05 -->
+<section class="slide" data-title="確認: 箇条書きが出たか">
+  <div class="eyebrow"><span class="part">Part 05 — 確認</span><span class="bar"></span></div>
+  <h2>ここまでで、こうなっていれば正しい</h2>
+  <div class="note do">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--success)"><circle cx="12" cy="12" r="10"/><path d="m7.5 12.4 3 3 6-6.4" stroke="#fff" stroke-width="2.3" fill="none" stroke-linecap="round"/></svg>正しい状態</div>
+    <p><code class="inline">127.0.0.1:5000/taro</code> を開くと、<strong>Hello, taro!</strong> と、その下に<strong>「ラーメン／ゲーム／猫」の箇条書き3つ</strong>が出ている。</p>
+  </div>
+  <div class="note warn">
+    <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--warning)"><path d="M12 2 22 21H2z"/><path d="M12 9v5M12 16.6v1.3" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>そうなっていないとき</div>
+    <p><b>箇条書きが出ない</b> — <code class="inline">favorites=favorites</code> を渡していないかもしれません。<strong>渡し忘れは空っぽ扱いになる</strong>ので、<code class="inline">{% else %}</code> 側の「まだ何もありません。」が出ます。<br>
+    <b><code class="inline">jinja2.exceptions.TemplateSyntaxError</code> と出た</b> — <code class="inline">{% endfor %}</code> か <code class="inline">{% endif %}</code> の<strong>閉じ忘れ</strong>です。エラーの行番号を見てください。<br>
+    <b>箇条書きが3つではなく1つ</b> — <code class="inline">&lt;li&gt;</code> が <code class="inline">{% for %}</code> の<strong>外</strong>にあります。</p>
+  </div>
+</section>
+
+<!-- 完成コード app.py -->
+<section class="slide" data-title="完成コード app.py">
+  <div class="eyebrow"><span class="part">Summary</span><span class="bar"></span></div>
+  <h2>完成した <span class="cmdname">app.py</span></h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">Python</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-cmd">from</span> flask <span class="c-cmd">import</span> Flask
+<span class="c-cmd">from</span> flask <span class="c-cmd">import</span> render_template
+
+app = Flask(__name__)
+
+favorites = [
+    <span class="c-str">"ラーメン"</span>,
+    <span class="c-str">"ゲーム"</span>,
+    <span class="c-str">"猫"</span>,
+]
+
+<span class="c-cmd">@app.route</span>(<span class="c-str">"/"</span>)
+<span class="c-cmd">def</span> hello_world():
+    <span class="c-cmd">return</span> render_template(<span class="c-str">'index.html'</span>, name=<span class="c-str">"ゲスト"</span>, favorites=favorites)
+
+<span class="c-cmd">@app.route</span>(<span class="c-str">"/&lt;name&gt;"</span>)
+<span class="c-cmd">def</span> hello(name):
+    <span class="c-cmd">return</span> render_template(<span class="c-str">'index.html'</span>, name=name, favorites=favorites)
+
+<span class="c-cmd">if</span> __name__ == <span class="c-str">"__main__"</span>:
+    app.run()</code></pre>
+  </div>
+</section>
+
+<!-- 完成コード index.html -->
+<section class="slide" data-title="完成コード index.html">
+  <div class="eyebrow"><span class="part">Summary</span><span class="bar"></span></div>
+  <h2>完成した <span class="cmdname">templates/index.html</span></h2>
+  <div class="code">
+    <div class="code-head"><span class="code-lang">HTML</span><button class="copy" type="button">コピー</button></div>
+<pre><code><span class="c-com">&lt;!DOCTYPE html&gt;</span>
+<span class="c-opt">&lt;html</span> lang=<span class="c-str">"ja"</span><span class="c-opt">&gt;</span>
+<span class="c-opt">&lt;head&gt;</span>
+  <span class="c-opt">&lt;meta</span> charset=<span class="c-str">"UTF-8"</span><span class="c-opt">&gt;</span>
+  <span class="c-opt">&lt;title&gt;</span>自己紹介<span class="c-opt">&lt;/title&gt;</span>
+<span class="c-opt">&lt;/head&gt;</span>
+<span class="c-opt">&lt;body&gt;</span>
+  <span class="c-opt">&lt;h1&gt;</span>Hello, <span class="c-cmd">{{ name }}</span>!<span class="c-opt">&lt;/h1&gt;</span>
+  <span class="c-opt">&lt;p&gt;</span>はじめまして。このページは Flask で作りました。<span class="c-opt">&lt;/p&gt;</span>
+  <span class="c-opt">&lt;p&gt;</span>好きなもの<span class="c-opt">&lt;/p&gt;</span>
+  <span class="c-cmd">{% if favorites %}</span>
+  <span class="c-opt">&lt;ul&gt;</span>
+    <span class="c-cmd">{% for item in favorites %}</span>
+    <span class="c-opt">&lt;li&gt;</span><span class="c-cmd">{{ item }}</span><span class="c-opt">&lt;/li&gt;</span>
+    <span class="c-cmd">{% endfor %}</span>
+  <span class="c-opt">&lt;/ul&gt;</span>
+  <span class="c-cmd">{% else %}</span>
+  <span class="c-opt">&lt;p&gt;</span>まだ何もありません。<span class="c-opt">&lt;/p&gt;</span>
+  <span class="c-cmd">{% endif %}</span>
+<span class="c-opt">&lt;/body&gt;</span>
+<span class="c-opt">&lt;/html&gt;</span></code></pre>
+  </div>
+  <p>家で復習するときは、<strong>この2枚だけ見れば戻せます。</strong></p>
+</section>
+
+<!-- やってみよう 1-2 -->
+<section class="slide" data-title="やってみよう 1・2">
   <div class="eyebrow"><span class="part">Practice</span><span class="bar"></span></div>
   <div class="try">
-    <div class="try-t">やってみよう</div>
-    <p><b>1.</b> <code class="inline">/hello/taro</code> で「Hello, taro!」と出るようにしてください。<br>
-    <b>2.</b> <code class="inline">/</code> を開いたときに、自分の好きな文を出るようにしてください。</p>
+    <div class="try-t">やってみよう 1・2</div>
+    <p><b>1.</b> <code class="inline">{{ name }}</code> の下に、<strong>自分の好きな文を1行</strong>足してください。<code class="inline">&lt;p&gt;</code> で囲みます。<br>
+    <b>2.</b> <code class="inline">favorites</code> を<strong>自分の「好きなもの」</strong>に書き換えてください。<strong>4つ以上</strong>にしてみてください。</p>
+    <p style="font-size:15px;color:var(--text-sub)">どちらも、直したあと<strong>止めて起動し直す</strong>のを忘れないでください。</p>
     <details>
       <summary><svg class="plus" width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>答えを見る</summary>
       <div class="code">
-        <div class="code-head"><span class="code-lang">Python</span></div>
-<pre><code><span class="c-com"># 1. 荷札に /hello/ を足すだけ。関数名は重複しない名前に</span>
-<span class="c-cmd">@app.route</span>(<span class="c-str">"/hello/&lt;name&gt;"</span>)
-<span class="c-cmd">def</span> hello_name(name):
-    <span class="c-cmd">return</span> f<span class="c-str">"&lt;p&gt;Hello, { name }!&lt;/p&gt;"</span>
-
-<span class="c-com"># 2. hello_world の return を書き換えるだけ</span>
-<span class="c-cmd">@app.route</span>(<span class="c-str">"/"</span>)
-<span class="c-cmd">def</span> hello_world():
-    <span class="c-cmd">return</span> <span class="c-str">"&lt;p&gt;おなかがすいた&lt;/p&gt;"</span></code></pre>
+        <div class="code-head"><span class="code-lang">HTML</span></div>
+<pre><code>  <span class="c-opt">&lt;h1&gt;</span>Hello, <span class="c-cmd">{{ name }}</span>!<span class="c-opt">&lt;/h1&gt;</span>
+  <span class="c-opt">&lt;p&gt;</span>毎日ラーメンを食べたい。<span class="c-opt">&lt;/p&gt;</span>   <span class="c-com">&lt;!-- 1. 足した行 --&gt;</span></code></pre>
       </div>
-      <p>1問目のポイントは、<strong>スラッシュをまたぐなら、荷札のほうにスラッシュを書く</strong>ことです。<code class="inline">/&lt;name&gt;</code> のままでは <code class="inline">/hello/taro</code> に当たりません。</p>
+      <div class="code">
+        <div class="code-head"><span class="code-lang">Python</span></div>
+<pre><code><span class="c-com"># 2. 中身を入れ替えて、数を増やすだけ</span>
+favorites = [
+    <span class="c-str">"バスケ"</span>,
+    <span class="c-str">"カレー"</span>,
+    <span class="c-str">"音楽"</span>,
+    <span class="c-str">"犬"</span>,
+]</code></pre>
+      </div>
+      <p>2問目で <span class="latin">HTML</span> を<strong>直していない</strong>ことが大事です。<code class="inline">{% for %}</code> が数を見て回してくれるので、<strong>いくつに増えても <span class="latin">HTML</span> はそのまま</strong>です。</p>
     </details>
   </div>
 </section>
 
-<!-- 39 まとめ -->
+<!-- やってみよう 3-4 -->
+<section class="slide" data-title="やってみよう 3・4">
+  <div class="eyebrow"><span class="part">Practice</span><span class="bar"></span></div>
+  <div class="try">
+    <div class="try-t">やってみよう 3・4</div>
+    <p><b>3.</b> <code class="inline">127.0.0.1:5000/</code> のうしろに<strong>自分の名前</strong>を付けて開いてください。ローマ字でも日本語でも通ります。<br>
+    <b>4.</b> <code class="inline">favorites</code> を <strong>空のリスト <code class="inline">[]</code></strong> にしたら何が出るか、<strong>予想してから</strong>動かして確かめてください。</p>
+    <details>
+      <summary><svg class="plus" width="12" height="12" viewBox="0 0 12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>答えを見る</summary>
+      <div class="code">
+        <div class="code-head"><span class="code-lang">Python</span></div>
+<pre><code><span class="c-com"># 4. 中身を消すだけ。消したあとは元に戻す</span>
+favorites = []</code></pre>
+        <div class="out"><b>ブラウザの表示</b>Hello, taro!
+はじめまして。このページは Flask で作りました。
+好きなもの
+まだ何もありません。</div>
+      </div>
+      <p>箇条書きが消えて、<code class="inline">{% else %}</code> 側の文が出ます。<strong><code class="inline">{% if %}</code> を書いておいた意味がここで出ます。</strong>書いていなければ、「好きなもの」という見出しの下が<strong>空っぽのまま</strong>でした。</p>
+    </details>
+  </div>
+</section>
+
+<!-- まとめ -->
 <section class="slide" data-title="まとめ">
   <div class="eyebrow"><span class="part">Summary</span><span class="bar"></span></div>
   <h2>まとめ</h2>
   <ol class="steps">
-    <li><b>Webアプリは、リクエストを受けてレスポンスを返すプログラム</b>サーバーは止めるまで<strong>ずっと待っている</strong>。ターミナルが戻らないのは正常。</li>
-    <li><b>仮想環境は、このアプリ専用の道具置き場</b><code class="inline">py -m venv venv</code> → <code class="inline">venv\Scripts\Activate.ps1</code> → <code class="inline">pip install Flask</code>。</li>
-    <li><b><span class="latin">@app.route</span> は、関数に貼る荷札</b>どの URL が来たらどの関数を呼ぶかを決める。この <code class="inline">@</code> は<strong>デコレータ</strong>という書き方。</li>
-    <li><b><span class="latin">&lt;name&gt;</span> で URL の一部を受け取れる</b>荷札・引数・f文字列の<strong>3か所で同じ名前</strong>にする。</li>
-    <li><b>コードを直したら、止めて起動し直す</b>今日いちばん多いミス。</li>
+    <li><b>見た目は <span class="latin">HTML</span> のファイルに分ける</b>置き場所は <code class="inline">templates</code> ディレクトリ。<strong>名前と階層が決まっている。</strong></li>
+    <li><b><span class="latin">return</span> する代わりに <span class="latin">render_template</span></b>書くのは<strong>ファイル名だけ</strong>。場所は <span class="latin">Flask</span> が知っている。</li>
+    <li><b><span class="latin">{{ 名前 }}</span> が穴、<span class="latin">name=</span> で埋める</b><strong>左が穴の名前、右が値。</strong>綴りが違うと、何も入らず空になる。</li>
+    <li><b>穴を埋めるのはサーバー</b>ブラウザに届く前に終わっている。<kbd>Ctrl</kbd>+<kbd>U</kbd> で確かめられる。</li>
+    <li><b><span class="latin">HTML</span> を直したら、止めて起動し直す</b>今日いちばん多いつまずき。<strong>「変わらない」と思ったら、まずこれ。</strong></li>
   </ol>
 </section>
 
-<!-- 40 締め -->
+<!-- 締め -->
 <section class="slide" data-title="詰まったとき / 次に読む">
   <div class="eyebrow"><span class="part">Next</span><span class="bar"></span></div>
   <h2>詰まったら</h2>
   <div class="note stuck">
     <div class="note-t"><svg width="17" height="17" viewBox="0 0 24 24" fill="var(--error)"><circle cx="12" cy="12" r="10"/><path d="M12 6.6v7M12 16v1.4" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>エラーが出て動かないとき</div>
-    <p>ひとりで粘る前に、<a href="../cs/how-to-get-unstuck.html">詰まったときの動き方</a>を開いてください。<strong>Flask のエラーはターミナルに出ます。</strong>ブラウザだけ見ていても分かりません。</p>
+    <p>ひとりで粘る前に、<a href="../cs/how-to-get-unstuck.html">詰まったときの動き方</a>を開いてください。<strong><span class="latin">HTML</span> の間違いはターミナルに出ます。</strong>ブラウザだけ見ていても分かりません。検索するときは <strong><span class="latin">jinja</span></strong> を足すと当たりやすくなります。</p>
   </div>
   <h3>次に読む</h3>
   <div class="next">
-    <a href="flask-templates.html">
-      <span><span class="lbl">Python 次回</span><span class="ttl">画面（HTML）テンプレート</span></span>
+    <div class="soon">
+      <span><span class="lbl">Python 次回</span><span class="ttl">テンプレートの共通化とメモ一覧</span></span>
+      <span style="font-size:13px">準備中</span>
+    </div>
+    <a href="flask-first-web-app.html">
+      <span><span class="lbl">Python 前回</span><span class="ttl">はじめての Web アプリ</span></span>
       <span aria-hidden="true">→</span>
     </a>
     <a href="python-cheatsheet.html">
@@ -799,10 +945,11 @@ app = Flask(__name__)
     </a>
   </div>
   <p style="margin-top:18px;font-size:13.5px;color:var(--text-sub)">
-    サンプルコードの出典: <a href="https://github.com/gurishunin/udemy_flask_memo">gurishunin/udemy_flask_memo</a>（<span class="latin">01_01_hello</span> 〜 <span class="latin">01_03_routing_2</span>）／
+    サンプルコードの出典: <a href="https://github.com/gurishunin/udemy_flask_memo">gurishunin/udemy_flask_memo</a>（<span class="latin">01_04_templates</span> 〜 <span class="latin">01_05_templates_2</span>）／
     <span class="latin">Flask 3.x</span> で確認　—　最終更新 <span class="latin">2026-10-03</span>
   </p>
 </section>
+
 </div>
 
 <nav class="nav">
